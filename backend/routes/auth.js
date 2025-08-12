@@ -1,14 +1,18 @@
-const express = require('express');
-const User = require('../models/User');
-const { generateToken } = require('../utils/jwt');
-const { validateRegister, validateLogin, checkValidation } = require('../utils/validators');
-const { authLimiter } = require('../middleware/rateLimit');
-const { authenticateToken } = require('../middleware/auth');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
+import { body, validationResult } from 'express-validator';
+import rateLimit from 'express-rate-limit';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // POST /api/auth/register
-router.post('/register', authLimiter, validateRegister, checkValidation, async (req, res) => {
+router.post('/register', rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }), [
+  body('email').isEmail(),
+  body('password').isLength({ min: 8 })
+], async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -37,7 +41,18 @@ router.post('/register', authLimiter, validateRegister, checkValidation, async (
 });
 
 // POST /api/auth/login
-router.post('/login', authLimiter, validateLogin, checkValidation, async (req, res) => {
+router.post('/login', rateLimit({ windowMs: 15 * 60 * 1000, max: 5 }), [
+  body('email').isEmail(),
+  body('password').notEmpty()
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Données invalides',
+      errors: errors.array()
+    });
+  }
   try {
     const { email, password } = req.body;
 
@@ -79,4 +94,65 @@ router.get('/me', authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+// POST /api/auth/refresh
+router.post('/refresh', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const token = generateToken(user._id, user.role);
+    res.json({ token });
+  } catch (error) {
+    console.error('Erreur refresh token:', error);
+    res.status(500).json({ message: 'Erreur lors du rafraîchissement du token' });
+  }
+});
+
+// POST /api/auth/forgot-password
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Ne pas révéler si l'email existe ou non
+      return res.json({ message: 'Si cet email existe, un lien de réinitialisation a été envoyé' });
+    }
+
+    // TODO: Implémenter l'envoi d'email avec token de réinitialisation
+    // Pour l'instant, on simule juste la réponse
+    res.json({ message: 'Un lien de réinitialisation a été envoyé à votre email' });
+  } catch (error) {
+    console.error('Erreur forgot password:', error);
+    res.status(500).json({ message: 'Erreur lors de la demande de réinitialisation' });
+  }
+});
+
+// POST /api/auth/reset-password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    
+    // TODO: Vérifier le token de réinitialisation
+    // Pour l'instant, on simule juste la réponse
+    res.json({ message: 'Mot de passe réinitialisé avec succès' });
+  } catch (error) {
+    console.error('Erreur reset password:', error);
+    res.status(500).json({ message: 'Erreur lors de la réinitialisation du mot de passe' });
+  }
+});
+
+// POST /api/auth/logout
+router.post('/logout', authenticateToken, async (req, res) => {
+  try {
+    // TODO: Implémenter une blacklist de tokens si nécessaire
+    res.json({ message: 'Déconnexion réussie' });
+  } catch (error) {
+    console.error('Erreur logout:', error);
+    res.status(500).json({ message: 'Erreur lors de la déconnexion' });
+  }
+});
+
+export default router;

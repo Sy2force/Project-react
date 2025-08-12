@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
+import { authenticateToken, requireAdmin } from '../middleware/auth.js';
+import User from '../models/User.js';
+import { body, validationResult, query } from 'express-validator';
+
 const router = express.Router();
-const auth = require('../middleware/auth');
-const requireAdmin = require('../middleware/requireAdmin');
-const User = require('../models/User');
-const { body, validationResult, query } = require('express-validator');
 
 // Toutes les routes admin nécessitent l'authentification et les droits admin
-router.use(auth);
+router.use(authenticateToken);
 router.use(requireAdmin);
 
 /**
@@ -259,4 +259,4 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

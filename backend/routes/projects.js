@@ -1,6 +1,7 @@
 import express from 'express';
 import Project from '../models/Project.js';
 import { authenticateToken, optionalAuth } from '../middleware/auth.js';
+import { body, validationResult } from 'express-validator';
 import { requireRole } from '../middleware/rbac.js';
 import { validateProject, checkValidation } from '../utils/validators.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
@@ -142,4 +143,118 @@ router.post('/:id/like', authenticateToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+// POST /api/projects/:id/like - Liker/unliker un projet
+router.post('/:id/like', authenticateToken, async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    if (!project) {
+      return res.status(404).json({ message: 'Projet non trouvé' });
+    }
+
+    const userId = req.user.id;
+    const likeIndex = project.likes.indexOf(userId);
+
+    if (likeIndex > -1) {
+      // Retirer le like
+      project.likes.splice(likeIndex, 1);
+      project.likesCount = Math.max(0, project.likesCount - 1);
+    } else {
+      // Ajouter le like
+      project.likes.push(userId);
+      project.likesCount += 1;
+    }
+
+    await project.save();
+
+    res.json({
+      success: true,
+      data: {
+        liked: likeIndex === -1,
+        likesCount: project.likesCount
+      }
+    });
+  } catch (error) {
+    console.error('Erreur like projet:', error);
+    res.status(500).json({ message: 'Erreur lors du like du projet' });
+  }
+});
+
+// GET /api/projects/search - Rechercher des projets
+router.get('/search', async (req, res) => {
+  try {
+    const { q, category, technology, status = 'published', page = 1, limit = 12 } = req.query;
+
+    let query = { status };
+
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } }
+      ];
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (technology) {
+      query.technologies = { $in: [new RegExp(technology, 'i')] };
+    }
+
+    const skip = (page - 1) * parseInt(limit);
+    const projects = await Project.find(query)
+      .populate('author', 'name email')
+      .sort({ featured: -1, createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Project.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: projects,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('Erreur recherche projets:', error);
+    res.status(500).json({ message: 'Erreur lors de la recherche de projets' });
+  }
+});
+
+// GET /api/projects/categories - Récupérer les catégories disponibles
+router.get('/categories', async (req, res) => {
+  try {
+    const categories = await Project.distinct('category', { status: 'published' });
+    res.json({
+      success: true,
+      data: categories.filter(cat => cat) // Filtrer les valeurs nulles
+    });
+  } catch (error) {
+    console.error('Erreur récupération catégories:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des catégories' });
+  }
+});
+
+// GET /api/projects/technologies - Récupérer les technologies disponibles
+router.get('/technologies', async (req, res) => {
+  try {
+    const technologies = await Project.distinct('technologies', { status: 'published' });
+    const flatTechnologies = technologies.flat().filter(tech => tech);
+    const uniqueTechnologies = [...new Set(flatTechnologies)];
+    
+    res.json({
+      success: true,
+      data: uniqueTechnologies.sort()
+    });
+  } catch (error) {
+    console.error('Erreur récupération technologies:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des technologies' });
+  }
+});
+
+export default router;

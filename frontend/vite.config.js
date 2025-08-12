@@ -1,46 +1,41 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
-import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    visualizer({
-      filename: 'dist/stats.html',
-      open: false,
-      gzipSize: true,
-      brotliSize: true
-    })
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
-    }
+      "@": path.resolve(__dirname, "src"),
+      "@cmp": path.resolve(__dirname, "src/components"),
+      "@pages": path.resolve(__dirname, "src/pages"),
+      "@assets": path.resolve(__dirname, "src/assets"),
+    },
   },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5001',
-        changeOrigin: true,
-        secure: false
-      }
-    }
+  server: { 
+    port: 3001,
+    host: true,
+    hmr: { overlay: false },
+    open: false
   },
   build: {
-    outDir: 'dist',
+    target: "es2020",
+    cssCodeSplit: true,
     sourcemap: false,
+    chunkSizeWarningLimit: 900,
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          motion: ['framer-motion'],
-          icons: ['lucide-react']
-        }
-      }
-    }
-  }
-})
+          react: ["react", "react-dom"],
+        },
+      },
+    },
+    minify: "esbuild",
+  },
+  esbuild: {
+    drop: ["console", "debugger"]
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom"],
+  },
+});

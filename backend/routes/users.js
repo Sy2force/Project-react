@@ -186,4 +186,4 @@ router.delete('/me/favorites/:cardId',
   }
 );
 
-module.exports = router;
+export default router;

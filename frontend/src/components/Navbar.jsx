@@ -1,677 +1,523 @@
-import React, { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Menu, 
   X, 
-  Home, 
   User, 
-  Briefcase, 
-  Code2, 
-  Mail, 
+  Settings, 
+  LogOut, 
+  Home, 
+  FolderOpen, 
   BookOpen, 
-  Settings,
-  LogOut,
+  Mail,
   Search,
-  CreditCard,
+  Bell,
+  Sparkles,
+  Info,
+  LogIn,
+  UserPlus,
   Heart,
-  Plus,
-  Shield
-} from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
-import { usePreload, preloadRoutes } from '../utils/preload'
+  Shield,
+  CreditCard
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import Button from './ui/Button';
+import SearchBar from './SearchBar';
+import ThemeToggle from './ThemeToggle';
 
-/**
- * Navbar 2 lignes PROMPT 1 - Style identique au footer
- * Ligne 1: Logo "SA" (glass) • Recherche centrée • Actions auth
- * Ligne 2: Navigation centrée (Accueil, Projets, BCard, etc.)
- * Style: backdrop-blur-xl bg-white/5 border-white/10 shadow-glass rounded-b-2xl
- */
 const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const { user, logout } = useAuth()
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout, isAuthenticated, isAdmin, canCreateCards } = useAuth();
+  const { isDark } = useTheme();
 
-  const isActive = (path) => location.pathname === path
+  const publicNavLinks = [
+    { name: 'Accueil', href: '/', icon: Home },
+    { name: 'Projets', href: '/projects', icon: FolderOpen },
+    { name: 'Blog', href: '/blog', icon: BookOpen },
+    { name: 'À propos', href: '/about', icon: Info },
+  ];
+
+  const userNavLinks = [
+    { name: 'Favoris', href: '/favorites', icon: Heart },
+    { name: 'Profil', href: '/profile/edit', icon: User },
+  ];
+
+  const businessNavLinks = [
+    { name: 'Mes Cartes', href: '/my-cards', icon: CreditCard },
+  ];
+
+  const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
-    logout()
-    setIsMobileMenuOpen(false)
-  }
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      navigate(`/bcard?q=${encodeURIComponent(searchQuery.trim())}`)
-      setSearchQuery('')
-      setIsMobileMenuOpen(false)
-    }
-  }
-
-  // Navigation links PROMPT 1 avec préchargement
-  const getNavLinks = () => {
-    const baseLinks = [
-      { path: '/home', label: 'Accueil', icon: Home, preload: preloadRoutes.home },
-      { path: '/projects', label: 'Projets', icon: Briefcase, preload: preloadRoutes.projects },
-      { path: '/bcard', label: 'BCard', icon: CreditCard, preload: preloadRoutes.cards },
-      { path: '/blog', label: 'Blog', icon: BookOpen },
-      { path: '/services', label: 'Services', icon: Settings },
-      { path: '/skills', label: 'Compétences', icon: Code2 },
-      { path: '/contact', label: 'Contact', icon: Mail, preload: preloadRoutes.contact },
-      { path: '/projects', label: 'Projets', icon: FolderOpen },
-      { path: '/bcard', label: 'BCard', icon: CreditCard },
-      { path: '/blog', label: 'Blog', icon: BookOpen },
-      { path: '/services', label: 'Services', icon: Briefcase },
-      { path: '/skills', label: 'Compétences', icon: Settings },
-      { path: '/contact', label: 'Contact', icon: Mail }
-    ]
-
-    if (user) {
-      baseLinks.push({ path: '/favorites', label: 'Favoris', icon: Heart })
-      
-      if (user.role === 'business' || user.role === 'admin') {
-        baseLinks.push(
-          { path: '/my-cards', label: 'Mes cartes', icon: CreditCard },
-          { path: '/cards/new', label: 'Créer une carte', icon: Plus }
-        )
-      }
-
-      if (user.role === 'admin') {
-        baseLinks.push({ path: '/dashboard', label: 'Dashboard', icon: Shield })
-      }
-    }
-
-    return baseLinks
-  }
-
-  const navLinks = getNavLinks()
+    logout();
+    setShowUserMenu(false);
+    navigate('/');
+  };
 
   return (
     <>
-      {/* Glass Navbar - Footer styling exact match */}
-      <nav 
-        style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(16px)'
-        }}
-        className="fixed top-0 left-0 right-0 z-40"
-        role="navigation"
-        aria-label="Navigation principale"
+      <motion.nav
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-lg border-b ${
+          isDark 
+            ? 'bg-gray-900/80 border-white/10' 
+            : 'bg-white/80 border-gray-200'
+        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
-          {/* Ligne 1: Logo + Recherche + Actions */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            
-            {/* Logo capsule S.A + nom */}
-            <Link 
-              to="/home" 
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                textDecoration: 'none'
-              }}
-              aria-label="Retour à l'accueil"
+            {/* Logo */}
+            <motion.div
+              className="flex items-center space-x-3"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div style={{
-                width: '40px',
-                height: '40px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-              }}>
-                <span style={{
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  color: '#ffffff'
-                }}>
+              <Link to="/" className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-white text-lg shadow-lg">
                   S.A
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  Shay Acoca
                 </span>
-              </div>
-              <span style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#ffffff'
-              }}>
-                Shay Acoca
-              </span>
-            </Link>
+              </Link>
+            </motion.div>
 
-            {/* Champ de recherche centré */}
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8">
-              <div className="relative w-full">
-                <Search 
-                  size={20} 
-                  style={{
-                    position: 'absolute',
-                    left: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: '#94a3b8'
-                  }}
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher…"
-                  style={{
-                    width: '100%',
-                    height: '44px',
-                    paddingLeft: '44px',
-                    paddingRight: '16px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '12px',
-                    color: '#ffffff',
-                    fontSize: '14px',
-                    outline: 'none',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                    e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                    e.target.style.boxShadow = 'none'
-                  }}
-                  aria-label="Rechercher"
-                />
-              </div>
-            </form>
-
-            {/* Actions droite */}
-            <div className="flex items-center gap-3">
-              {user ? (
-                <div className="hidden md:flex items-center gap-3">
-                  <Link to="/profile">
-                    <button
-                      style={{
-                        width: '44px',
-                        height: '44px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        color: '#ffffff',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.boxShadow = 'none'
-                      }}
-                      aria-label="Profil utilisateur"
-                    >
-                      <User size={20} />
-                    </button>
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      width: '44px',
-                      height: '44px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px',
-                      color: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = 'none'
-                    }}
-                    aria-label="Se déconnecter"
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Liens publics */}
+              {publicNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          : 'bg-blue-100 text-blue-600 border border-blue-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
                   >
-                    <LogOut size={20} />
+                    <Icon size={18} />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Liens utilisateur connecté */}
+              {isAuthenticated && userNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : 'bg-green-100 text-green-600 border border-green-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Liens business/admin */}
+              {canCreateCards() && businessNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                          : 'bg-purple-100 text-purple-600 border border-purple-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span>{link.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
+              {/* Search Button */}
+              <button
+                onClick={() => setShowSearch(!showSearch)}
+                className={`p-2 rounded-lg transition-all duration-200 ${
+                  isDark 
+                    ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Search size={18} />
+              </button>
+
+              {/* Notifications */}
+              {isAuthenticated && (
+                <button
+                  className={`p-2 rounded-lg transition-all duration-200 relative ${
+                    isDark 
+                      ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Bell size={18} />
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                </button>
+              )}
+
+              {/* User Menu or Login */}
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      isDark 
+                        ? 'text-white hover:bg-white/5' 
+                        : 'text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <User size={16} className="text-white" />
+                    </div>
+                    <span className="font-medium">{user?.name || 'Utilisateur'}</span>
                   </button>
+
+                  {/* User Dropdown */}
+                  {showUserMenu && (
+                    <motion.div
+                      className={`absolute right-0 mt-2 w-56 rounded-lg border shadow-xl z-50 ${
+                        isDark 
+                          ? 'bg-gray-800/95 border-white/10 backdrop-blur-lg' 
+                          : 'bg-white/95 border-gray-200 backdrop-blur-lg'
+                      }`}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      <div className="p-2">
+                        <div className={`px-3 py-2 border-b ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+                          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Connecté en tant que</p>
+                          <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{user?.name || 'Utilisateur'}</p>
+                          <p className="text-xs text-blue-400 capitalize">{user?.role || 'user'}</p>
+                        </div>
+                        
+                        <div className="mt-2 space-y-1">
+                          <Link
+                            to="/profile/edit"
+                            onClick={() => setShowUserMenu(false)}
+                            className={`flex items-center space-x-2 w-full px-3 py-2 rounded-lg text-sm transition-colors ${
+                              isDark 
+                                ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                            }`}
+                          >
+                            <Settings size={16} />
+                            <span>Paramètres</span>
+                          </Link>
+                          
+                          {isAdmin() && (
+                            <Link
+                              to="/admin/dashboard"
+                              onClick={() => setShowUserMenu(false)}
+                              className={`flex items-center space-x-2 w-full px-3 py-2 rounded-lg text-sm transition-colors ${
+                                isDark 
+                                  ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                              }`}
+                            >
+                              <Shield size={16} />
+                              <span>Administration</span>
+                            </Link>
+                          )}
+                          
+                          <button
+                            onClick={handleLogout}
+                            className={`flex items-center space-x-2 w-full px-3 py-2 rounded-lg text-sm transition-colors ${
+                              isDark 
+                                ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10' 
+                                : 'text-red-600 hover:text-red-700 hover:bg-red-50'
+                            }`}
+                          >
+                            <LogOut size={16} />
+                            <span>Déconnexion</span>
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               ) : (
-                <div className="hidden md:flex items-center gap-3">
-                  <Link to="/auth">
-                    <button
-                      style={{
-                        height: '44px',
-                        padding: '0 20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        color: '#ffffff',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                        e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.boxShadow = 'none'
-                      }}
-                    >
-                      Se connecter
-                    </button>
+                <div className="flex items-center space-x-2">
+                  <Link
+                    to="/login"
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                      isDark 
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                  >
+                    <LogIn size={18} />
+                    <span>Connexion</span>
+                  </Link>
+                  <Link
+                    to="/register"
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                      isDark 
+                        ? 'border border-white/20 text-white hover:bg-white/5' 
+                        : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <UserPlus size={18} />
+                    <span>S'inscrire</span>
                   </Link>
                 </div>
               )}
-              
-              {/* Mobile menu button */}
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                style={{
-                  width: '44px',
-                  height: '44px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)'
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                }}
-                onFocus={(e) => {
-                  e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                }}
-                onBlur={(e) => {
-                  e.target.style.boxShadow = 'none'
-                }}
-                className="md:hidden"
-                aria-label={isMobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-menu"
-              >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
             </div>
-          </div>
 
-          {/* Ligne 2: Menu centré (desktop only) */}
-          <div className="hidden md:flex items-center justify-center py-3 border-t border-white/10">
-            <div className="flex items-center gap-1">
-              {navLinks.map((link) => {
-                const Icon = link.icon
-                const active = isActive(link.path)
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      height: '44px',
-                      padding: '0 20px',
-                      background: active ? 'rgba(102, 126, 234, 0.2)' : 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px',
-                      color: active ? '#ffffff' : 'rgba(255, 255, 255, 0.8)',
-                      textDecoration: 'none',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      transition: 'all 0.2s ease',
-                      boxShadow: active ? '0 4px 12px rgba(102, 126, 234, 0.3)' : 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!active) {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                        e.target.style.color = '#ffffff'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) {
-                        e.target.style.background = 'transparent'
-                        e.target.style.color = 'rgba(255, 255, 255, 0.8)'
-                      }
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.boxShadow = active 
-                        ? '0 4px 12px rgba(102, 126, 234, 0.3), 0 0 0 4px rgba(102, 126, 234, 0.1)'
-                        : '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.boxShadow = active ? '0 4px 12px rgba(102, 126, 234, 0.3)' : 'none'
-                    }}
-                  >
-                    <Icon size={20} />
-                    <span>{link.label}</span>
-                  </Link>
-                )
-              })}
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2"
+                onClick={() => setIsOpen(!isOpen)}
+                icon={isOpen ? <X size={24} /> : <Menu size={24} />}
+              />
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Mobile Menu - Fullscreen glass overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
+        {/* Search Bar */}
+        {showSearch && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 50,
-              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-              backdropFilter: 'blur(16px)'
-            }}
-            id="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mobile-menu-title"
+            className={`border-t backdrop-blur-lg ${
+              isDark 
+                ? 'border-white/10 bg-gray-900/90' 
+                : 'border-gray-200 bg-white/90'
+            }`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
           >
-            <div className="flex flex-col h-full p-6">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-                  }}>
-                    <span style={{
-                      fontSize: '18px',
-                      fontWeight: '700',
-                      color: '#ffffff'
-                    }}>
-                      S.A
-                    </span>
-                  </div>
-                  <span 
-                    id="mobile-menu-title"
-                    style={{
-                      fontSize: '20px',
-                      fontWeight: '700',
-                      color: '#ffffff'
-                    }}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <SearchBar 
+                onSearch={(query) => {
+                  // Navigation vers la page de recherche avec le terme de recherche
+                  if (query.trim()) {
+                    navigate(`/search?q=${encodeURIComponent(query)}`);
+                    setShowSearch(false);
+                  }
+                }}
+                placeholder="Rechercher des projets, articles, services..."
+              />
+            </div>
+          </motion.div>
+        )}
+      </motion.nav>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-40 md:hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
+          
+          <motion.div
+            className="absolute top-16 left-0 right-0 bg-gray-900/95 backdrop-blur-lg border-b border-white/10"
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+          >
+            <div className="px-4 py-6 space-y-4">
+              {/* Mobile Navigation Links */}
+              {/* Liens publics */}
+              {publicNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          : 'bg-blue-100 text-blue-600 border border-blue-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setIsOpen(false)}
                   >
-                    Menu
-                  </span>
-                </div>
-                <button 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '12px',
-                    color: '#ffffff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                  }}
-                  aria-label="Fermer le menu"
-                >
-                  <X size={20} />
-                </button>
-              </div>
+                    <Icon size={20} />
+                    <span className="font-medium">{link.name}</span>
+                  </Link>
+                );
+              })}
 
-              {/* Search mobile */}
-              <form onSubmit={handleSearch} className="mb-8">
-                <div className="relative">
-                  <Search 
-                    size={20} 
-                    style={{
-                      position: 'absolute',
-                      left: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      color: '#94a3b8'
-                    }}
-                  />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Rechercher…"
-                    style={{
-                      width: '100%',
-                      height: '44px',
-                      paddingLeft: '44px',
-                      paddingRight: '16px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '12px',
-                      color: '#ffffff',
-                      fontSize: '14px',
-                      outline: 'none'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'rgba(102, 126, 234, 0.5)'
-                      e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                      e.target.style.boxShadow = 'none'
-                    }}
-                    aria-label="Rechercher"
-                  />
-                </div>
-              </form>
+              {/* Liens utilisateur connecté */}
+              {isAuthenticated && userNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : 'bg-green-100 text-green-600 border border-green-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Icon size={20} />
+                    <span className="font-medium">{link.name}</span>
+                  </Link>
+                );
+              })}
 
-              {/* Navigation mobile */}
-              <div className="flex-1 space-y-2">
-                {navLinks.map((link) => {
-                  const Icon = link.icon
-                  const active = isActive(link.path)
-                  return (
+              {/* Liens business/admin */}
+              {canCreateCards() && businessNavLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive(link.href)
+                        ? isDark 
+                          ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                          : 'bg-purple-100 text-purple-600 border border-purple-200'
+                        : isDark
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Icon size={20} />
+                    <span className="font-medium">{link.name}</span>
+                  </Link>
+                );
+              })}
+
+              {/* Mobile User Section */}
+              <div className={`border-t pt-4 ${isDark ? 'border-white/10' : 'border-gray-200'}`}>
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    <div className="px-4 py-2">
+                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Connecté en tant que</p>
+                      <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{user?.name || 'Utilisateur'}</p>
+                      <p className="text-xs text-blue-400 capitalize">{user?.role || 'user'}</p>
+                    </div>
+                    
                     <Link
-                      key={link.path}
-                      to={link.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px',
-                        height: '56px',
-                        padding: '0 20px',
-                        background: active ? 'rgba(102, 126, 234, 0.2)' : 'transparent',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        color: active ? '#ffffff' : 'rgba(255, 255, 255, 0.8)',
-                        textDecoration: 'none',
-                        fontSize: '16px',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!active) {
-                          e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                          e.target.style.color = '#ffffff'
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!active) {
-                          e.target.style.background = 'transparent'
-                          e.target.style.color = 'rgba(255, 255, 255, 0.8)'
-                        }
-                      }}
+                      to="/profile/edit"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                        isDark 
+                          ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }`}
                     >
-                      <Icon size={24} />
-                      <span>{link.label}</span>
+                      <Settings size={18} />
+                      <span>Paramètres</span>
                     </Link>
-                  )
-                })}
-              </div>
-
-              {/* Actions mobile */}
-              <div style={{
-                paddingTop: '24px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                {user ? (
-                  <>
-                    <Link 
-                      to="/profile" 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        height: '44px',
-                        padding: '0 20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        color: '#ffffff',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                      }}
-                    >
-                      <User size={20} />
-                      Profil
-                    </Link>
+                    
+                    {isAdmin() && (
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                          isDark 
+                            ? 'text-gray-300 hover:text-white hover:bg-white/5' 
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        }`}
+                      >
+                        <Shield size={18} />
+                        <span>Administration</span>
+                      </Link>
+                    )}
+                    
                     <button
                       onClick={handleLogout}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        height: '44px',
-                        padding: '0 20px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '12px',
-                        color: '#ffffff',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        width: '100%',
-                        justifyContent: 'flex-start'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.1)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = 'rgba(255, 255, 255, 0.05)'
-                      }}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 w-full ${
+                        isDark 
+                          ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10' 
+                          : 'text-red-600 hover:text-red-700 hover:bg-red-50'
+                      }`}
                     >
-                      <LogOut size={20} />
-                      Déconnexion
+                      <LogOut size={18} />
+                      <span>Déconnexion</span>
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <Link 
-                    to="/auth" 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      height: '44px',
-                      padding: '0 20px',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      border: 'none',
-                      borderRadius: '12px',
-                      color: '#ffffff',
-                      textDecoration: 'none',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      transition: 'all 0.2s ease',
-                      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-1px)'
-                      e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.4)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)'
-                      e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.3)'
-                    }}
-                  >
-                    Se connecter
-                  </Link>
+                  <div className="space-y-2">
+                    <Link
+                      to="/login"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 w-full ${
+                        isDark 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                    >
+                      <LogIn size={18} />
+                      <span>Connexion</span>
+                    </Link>
+                    <Link
+                      to="/register"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 w-full ${
+                        isDark 
+                          ? 'border border-white/20 text-white hover:bg-white/5' 
+                          : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <UserPlus size={18} />
+                      <span>S'inscrire</span>
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

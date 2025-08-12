@@ -92,4 +92,4 @@ router.patch('/:id/toggle-favorite',
   toggleFavorite
 );
 
-module.exports = router;
+export default router;

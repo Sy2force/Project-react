@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 class DatabaseConnection {
   constructor() {
@@ -104,5 +104,4 @@ class DatabaseConnection {
 }
 
 // Export singleton instance
-const dbConnection = new DatabaseConnection();
-module.exports = dbConnection;
+export default new DatabaseConnection();

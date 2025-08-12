@@ -1,332 +1,356 @@
-// Utilitaires de validation pour le portfolio Shay Acoca
-import { CONSTANTS } from '../config/constants'
+// Utilitaires de validation avancée pour les formulaires
 
-// Validation des emails
-export const validateEmail = (email) => {
-  if (!email) return { isValid: false, message: 'Email requis' }
-  if (!CONSTANTS.PATTERNS.EMAIL.test(email)) {
-    return { isValid: false, message: 'Format d\'email invalide' }
-  }
-  return { isValid: true }
-}
+// Règles de validation pour les mots de passe
+export const passwordRules = {
+  minLength: 8,
+  requireUppercase: true,
+  requireLowercase: true,
+  requireNumbers: true,
+  requireSpecialChars: true,
+  maxLength: 128
+};
 
-// Validation des mots de passe
+// Validation du mot de passe
 export const validatePassword = (password) => {
-  if (!password) return { isValid: false, message: 'Mot de passe requis' }
-  if (password.length < CONSTANTS.LIMITS.MIN_PASSWORD_LENGTH) {
-    return { 
-      isValid: false, 
-      message: `Le mot de passe doit contenir au moins ${CONSTANTS.LIMITS.MIN_PASSWORD_LENGTH} caractères` 
-    }
-  }
-  if (password.length > CONSTANTS.LIMITS.MAX_PASSWORD_LENGTH) {
-    return { 
-      isValid: false, 
-      message: `Le mot de passe ne peut pas dépasser ${CONSTANTS.LIMITS.MAX_PASSWORD_LENGTH} caractères` 
-    }
-  }
-  return { isValid: true }
-}
-
-// Validation des noms
-export const validateName = (name, fieldName = 'Nom') => {
-  if (!name) return { isValid: false, message: `${fieldName} requis` }
-  if (name.trim().length < 2) {
-    return { isValid: false, message: `${fieldName} doit contenir au moins 2 caractères` }
-  }
-  if (name.length > 50) {
-    return { isValid: false, message: `${fieldName} ne peut pas dépasser 50 caractères` }
-  }
-  return { isValid: true }
-}
-
-// Validation des téléphones
-export const validatePhone = (phone) => {
-  if (!phone) return { isValid: false, message: 'Numéro de téléphone requis' }
-  if (!CONSTANTS.PATTERNS.PHONE.test(phone)) {
-    return { isValid: false, message: 'Format de téléphone invalide' }
-  }
-  return { isValid: true }
-}
-
-// Validation des URLs
-export const validateUrl = (url, required = false) => {
-  if (!url && !required) return { isValid: true }
-  if (!url && required) return { isValid: false, message: 'URL requise' }
-  if (!CONSTANTS.PATTERNS.URL.test(url)) {
-    return { isValid: false, message: 'Format d\'URL invalide' }
-  }
-  return { isValid: true }
-}
-
-// Validation des titres
-export const validateTitle = (title) => {
-  if (!title) return { isValid: false, message: 'Titre requis' }
-  if (title.trim().length < 3) {
-    return { isValid: false, message: 'Le titre doit contenir au moins 3 caractères' }
-  }
-  if (title.length > CONSTANTS.LIMITS.MAX_TITLE_LENGTH) {
-    return { 
-      isValid: false, 
-      message: `Le titre ne peut pas dépasser ${CONSTANTS.LIMITS.MAX_TITLE_LENGTH} caractères` 
-    }
-  }
-  return { isValid: true }
-}
-
-// Validation des descriptions
-export const validateDescription = (description, required = false) => {
-  if (!description && !required) return { isValid: true }
-  if (!description && required) return { isValid: false, message: 'Description requise' }
-  if (description && description.length > CONSTANTS.LIMITS.MAX_DESCRIPTION_LENGTH) {
-    return { 
-      isValid: false, 
-      message: `La description ne peut pas dépasser ${CONSTANTS.LIMITS.MAX_DESCRIPTION_LENGTH} caractères` 
-    }
-  }
-  return { isValid: true }
-}
-
-// Validation des commentaires
-export const validateComment = (comment) => {
-  if (!comment) return { isValid: false, message: 'Commentaire requis' }
-  if (comment.trim().length < 3) {
-    return { isValid: false, message: 'Le commentaire doit contenir au moins 3 caractères' }
-  }
-  if (comment.length > CONSTANTS.LIMITS.MAX_COMMENT_LENGTH) {
-    return { 
-      isValid: false, 
-      message: `Le commentaire ne peut pas dépasser ${CONSTANTS.LIMITS.MAX_COMMENT_LENGTH} caractères` 
-    }
-  }
-  return { isValid: true }
-}
-
-// Validation des fichiers
-export const validateFile = (file, options = {}) => {
-  const {
-    maxSize = CONSTANTS.LIMITS.MAX_FILE_SIZE,
-    allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'webp'],
-    required = false
-  } = options
-
-  if (!file && !required) return { isValid: true }
-  if (!file && required) return { isValid: false, message: 'Fichier requis' }
-
-  // Vérifier la taille
-  if (file.size > maxSize) {
-    return { 
-      isValid: false, 
-      message: `Le fichier est trop volumineux (max ${Math.round(maxSize / 1024 / 1024)}MB)` 
-    }
+  const errors = [];
+  const warnings = [];
+  
+  if (!password) {
+    errors.push('Le mot de passe est requis');
+    return { isValid: false, errors, warnings, strength: 0 };
   }
 
-  // Vérifier le type
-  const fileExtension = file.name.split('.').pop().toLowerCase()
-  if (!allowedTypes.includes(fileExtension)) {
-    return { 
-      isValid: false, 
-      message: `Type de fichier non autorisé. Types acceptés: ${allowedTypes.join(', ')}` 
-    }
+  // Longueur minimale
+  if (password.length < passwordRules.minLength) {
+    errors.push(`Le mot de passe doit contenir au moins ${passwordRules.minLength} caractères`);
   }
 
-  return { isValid: true }
-}
-
-// Validation des formulaires complets
-export const validateLoginForm = (formData) => {
-  const errors = {}
-
-  const emailValidation = validateEmail(formData.email)
-  if (!emailValidation.isValid) {
-    errors.email = emailValidation.message
+  // Longueur maximale
+  if (password.length > passwordRules.maxLength) {
+    errors.push(`Le mot de passe ne peut pas dépasser ${passwordRules.maxLength} caractères`);
   }
 
-  const passwordValidation = validatePassword(formData.password)
-  if (!passwordValidation.isValid) {
-    errors.password = passwordValidation.message
+  // Majuscules
+  if (passwordRules.requireUppercase && !/[A-Z]/.test(password)) {
+    errors.push('Le mot de passe doit contenir au moins une majuscule');
   }
 
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
-export const validateRegisterForm = (formData) => {
-  const errors = {}
-
-  const nameValidation = validateName(formData.name, 'Nom')
-  if (!nameValidation.isValid) {
-    errors.name = nameValidation.message
+  // Minuscules
+  if (passwordRules.requireLowercase && !/[a-z]/.test(password)) {
+    errors.push('Le mot de passe doit contenir au moins une minuscule');
   }
 
-  const emailValidation = validateEmail(formData.email)
-  if (!emailValidation.isValid) {
-    errors.email = emailValidation.message
+  // Chiffres
+  if (passwordRules.requireNumbers && !/\d/.test(password)) {
+    errors.push('Le mot de passe doit contenir au moins un chiffre');
   }
 
-  const passwordValidation = validatePassword(formData.password)
-  if (!passwordValidation.isValid) {
-    errors.password = passwordValidation.message
+  // Caractères spéciaux
+  if (passwordRules.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    errors.push('Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*(),.?":{}|<>)');
   }
 
-  if (formData.confirmPassword !== formData.password) {
-    errors.confirmPassword = 'Les mots de passe ne correspondent pas'
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
-export const validateContactForm = (formData) => {
-  const errors = {}
-
-  const nameValidation = validateName(formData.name, 'Nom')
-  if (!nameValidation.isValid) {
-    errors.name = nameValidation.message
-  }
-
-  const emailValidation = validateEmail(formData.email)
-  if (!emailValidation.isValid) {
-    errors.email = emailValidation.message
-  }
-
-  if (formData.phone) {
-    const phoneValidation = validatePhone(formData.phone)
-    if (!phoneValidation.isValid) {
-      errors.phone = phoneValidation.message
-    }
-  }
-
-  const messageValidation = validateComment(formData.message)
-  if (!messageValidation.isValid) {
-    errors.message = messageValidation.message
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
-export const validateProjectForm = (formData) => {
-  const errors = {}
-
-  const titleValidation = validateTitle(formData.title)
-  if (!titleValidation.isValid) {
-    errors.title = titleValidation.message
-  }
-
-  const descriptionValidation = validateDescription(formData.description, true)
-  if (!descriptionValidation.isValid) {
-    errors.description = descriptionValidation.message
-  }
-
-  if (formData.demoUrl) {
-    const urlValidation = validateUrl(formData.demoUrl)
-    if (!urlValidation.isValid) {
-      errors.demoUrl = urlValidation.message
-    }
-  }
-
-  if (formData.githubUrl) {
-    const urlValidation = validateUrl(formData.githubUrl)
-    if (!urlValidation.isValid) {
-      errors.githubUrl = urlValidation.message
-    }
-  }
-
-  if (!formData.technologies || formData.technologies.length === 0) {
-    errors.technologies = 'Au moins une technologie est requise'
-  }
-
-  if (!formData.category) {
-    errors.category = 'Catégorie requise'
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
-export const validatePostForm = (formData) => {
-  const errors = {}
-
-  const titleValidation = validateTitle(formData.title)
-  if (!titleValidation.isValid) {
-    errors.title = titleValidation.message
-  }
-
-  const descriptionValidation = validateDescription(formData.excerpt, true)
-  if (!descriptionValidation.isValid) {
-    errors.excerpt = descriptionValidation.message
-  }
-
-  if (!formData.content || formData.content.trim().length < 50) {
-    errors.content = 'Le contenu doit contenir au moins 50 caractères'
-  }
-
-  if (!formData.category) {
-    errors.category = 'Catégorie requise'
-  }
-
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
-
-// Fonction utilitaire pour nettoyer les données
-export const sanitizeInput = (input) => {
-  if (typeof input !== 'string') return input
-  return input.trim().replace(/\s+/g, ' ')
-}
-
-// Fonction pour valider un objet avec des règles personnalisées
-export const validateWithRules = (data, rules) => {
-  const errors = {}
-
-  Object.entries(rules).forEach(([field, rule]) => {
-    const value = data[field]
-
-    if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
-      errors[field] = rule.message || `${field} est requis`
-      return
-    }
-
-    if (value && rule.validator) {
-      const validation = rule.validator(value)
-      if (!validation.isValid) {
-        errors[field] = validation.message
+  // Vérifications de sécurité supplémentaires
+  if (password.length >= 8) {
+    // Séquences communes
+    const commonSequences = ['123456', 'abcdef', 'qwerty', 'azerty', 'password', 'motdepasse'];
+    const lowerPassword = password.toLowerCase();
+    
+    for (const sequence of commonSequences) {
+      if (lowerPassword.includes(sequence)) {
+        warnings.push(`Évitez d'utiliser des séquences communes comme "${sequence}"`);
       }
     }
-  })
+
+    // Répétitions
+    if (/(.)\1{2,}/.test(password)) {
+      warnings.push('Évitez de répéter le même caractère plusieurs fois de suite');
+    }
+  }
+
+  // Calcul de la force du mot de passe
+  let strength = 0;
+  if (password.length >= 8) strength += 20;
+  if (password.length >= 12) strength += 10;
+  if (/[A-Z]/.test(password)) strength += 15;
+  if (/[a-z]/.test(password)) strength += 15;
+  if (/\d/.test(password)) strength += 15;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 15;
+  if (password.length >= 16) strength += 10;
 
   return {
-    isValid: Object.keys(errors).length === 0,
-    errors
-  }
-}
+    isValid: errors.length === 0,
+    errors,
+    warnings,
+    strength: Math.min(strength, 100)
+  };
+};
 
-export default {
-  validateEmail,
-  validatePassword,
-  validateName,
-  validatePhone,
-  validateUrl,
-  validateTitle,
-  validateDescription,
-  validateComment,
-  validateFile,
-  validateLoginForm,
-  validateRegisterForm,
-  validateContactForm,
-  validateProjectForm,
-  validatePostForm,
-  sanitizeInput,
-  validateWithRules,
-}
+// Validation de l'email
+export const validateEmail = (email) => {
+  const errors = [];
+  
+  if (!email) {
+    errors.push('L\'email est requis');
+    return { isValid: false, errors };
+  }
+
+  // Format email basique
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    errors.push('Format d\'email invalide');
+  }
+
+  // Longueur maximale
+  if (email.length > 254) {
+    errors.push('L\'email ne peut pas dépasser 254 caractères');
+  }
+
+  // Domaines suspects (optionnel)
+  const suspiciousDomains = ['tempmail.com', '10minutemail.com', 'guerrillamail.com'];
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (domain && suspiciousDomains.includes(domain)) {
+    errors.push('Veuillez utiliser une adresse email permanente');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
+// Validation du nom/prénom
+export const validateName = (name, fieldName = 'nom') => {
+  const errors = [];
+  
+  if (!name || !name.trim()) {
+    errors.push(`Le ${fieldName} est requis`);
+    return { isValid: false, errors };
+  }
+
+  const trimmedName = name.trim();
+
+  // Longueur minimale
+  if (trimmedName.length < 2) {
+    errors.push(`Le ${fieldName} doit contenir au moins 2 caractères`);
+  }
+
+  // Longueur maximale
+  if (trimmedName.length > 50) {
+    errors.push(`Le ${fieldName} ne peut pas dépasser 50 caractères`);
+  }
+
+  // Caractères autorisés (lettres, espaces, tirets, apostrophes)
+  if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(trimmedName)) {
+    errors.push(`Le ${fieldName} ne peut contenir que des lettres, espaces, tirets et apostrophes`);
+  }
+
+  // Pas que des espaces
+  if (!/[a-zA-ZÀ-ÿ]/.test(trimmedName)) {
+    errors.push(`Le ${fieldName} doit contenir au moins une lettre`);
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    sanitized: trimmedName
+  };
+};
+
+// Validation du numéro de téléphone
+export const validatePhone = (phone) => {
+  const errors = [];
+  
+  if (!phone) {
+    // Le téléphone est optionnel dans la plupart des cas
+    return { isValid: true, errors };
+  }
+
+  // Nettoyage du numéro (suppression des espaces, tirets, etc.)
+  const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+
+  // Format français basique
+  const frenchPhoneRegex = /^(?:\+33|0)[1-9](?:[0-9]{8})$/;
+  if (!frenchPhoneRegex.test(cleanPhone)) {
+    errors.push('Format de téléphone invalide (ex: 01 23 45 67 89 ou +33 1 23 45 67 89)');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    sanitized: cleanPhone
+  };
+};
+
+// Validation d'URL
+export const validateUrl = (url, fieldName = 'URL') => {
+  const errors = [];
+  
+  if (!url) {
+    // L'URL est optionnelle dans la plupart des cas
+    return { isValid: true, errors };
+  }
+
+  try {
+    new URL(url);
+    
+    // Vérifier que c'est HTTP ou HTTPS
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      errors.push(`${fieldName} doit commencer par http:// ou https://`);
+    }
+  } catch {
+    errors.push(`${fieldName} invalide`);
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
+// Validation de texte libre (description, message, etc.)
+export const validateText = (text, fieldName = 'texte', minLength = 0, maxLength = 1000) => {
+  const errors = [];
+  
+  if (minLength > 0 && (!text || !text.trim())) {
+    errors.push(`Le ${fieldName} est requis`);
+    return { isValid: false, errors };
+  }
+
+  if (text) {
+    const trimmedText = text.trim();
+    
+    if (minLength > 0 && trimmedText.length < minLength) {
+      errors.push(`Le ${fieldName} doit contenir au moins ${minLength} caractères`);
+    }
+
+    if (trimmedText.length > maxLength) {
+      errors.push(`Le ${fieldName} ne peut pas dépasser ${maxLength} caractères`);
+    }
+
+    // Vérification de contenu suspect (spam, etc.)
+    const suspiciousPatterns = [
+      /(.)\1{10,}/, // Répétition excessive du même caractère
+      /https?:\/\/[^\s]+/gi // URLs multiples (potentiel spam)
+    ];
+
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(trimmedText)) {
+        errors.push(`Le ${fieldName} contient du contenu suspect`);
+        break;
+      }
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    sanitized: text?.trim()
+  };
+};
+
+// Validation de confirmation de mot de passe
+export const validatePasswordConfirmation = (password, confirmation) => {
+  const errors = [];
+  
+  if (!confirmation) {
+    errors.push('La confirmation du mot de passe est requise');
+    return { isValid: false, errors };
+  }
+
+  if (password !== confirmation) {
+    errors.push('Les mots de passe ne correspondent pas');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
+
+// Validation d'âge (pour les conditions d'utilisation)
+export const validateAge = (birthDate) => {
+  const errors = [];
+  
+  if (!birthDate) {
+    errors.push('La date de naissance est requise');
+    return { isValid: false, errors };
+  }
+
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  if (age < 13) {
+    errors.push('Vous devez avoir au moins 13 ans pour créer un compte');
+  }
+
+  if (age > 120) {
+    errors.push('Date de naissance invalide');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    age
+  };
+};
+
+// Fonction utilitaire pour valider un formulaire complet
+export const validateForm = (formData, validationRules) => {
+  const errors = {};
+  const warnings = {};
+  let isValid = true;
+
+  for (const [field, rules] of Object.entries(validationRules)) {
+    const value = formData[field];
+    let fieldResult = { isValid: true, errors: [], warnings: [] };
+
+    for (const rule of rules) {
+      const result = rule(value);
+      if (!result.isValid) {
+        fieldResult.isValid = false;
+        fieldResult.errors.push(...result.errors);
+      }
+      if (result.warnings) {
+        fieldResult.warnings.push(...result.warnings);
+      }
+    }
+
+    if (!fieldResult.isValid) {
+      errors[field] = fieldResult.errors;
+      isValid = false;
+    }
+
+    if (fieldResult.warnings.length > 0) {
+      warnings[field] = fieldResult.warnings;
+    }
+  }
+
+  return {
+    isValid,
+    errors,
+    warnings
+  };
+};
+
+// Fonction pour obtenir la couleur de la force du mot de passe
+export const getPasswordStrengthColor = (strength) => {
+  if (strength < 30) return 'bg-red-500';
+  if (strength < 60) return 'bg-yellow-500';
+  if (strength < 80) return 'bg-blue-500';
+  return 'bg-green-500';
+};
+
+// Fonction pour obtenir le texte de la force du mot de passe
+export const getPasswordStrengthText = (strength) => {
+  if (strength < 30) return 'Faible';
+  if (strength < 60) return 'Moyen';
+  if (strength < 80) return 'Fort';
+  return 'Très fort';
+};

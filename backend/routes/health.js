@@ -1,5 +1,5 @@
-const express = require('express');
-const dbConnection = require('../config/database');
+import express from 'express';
+import dbConnection from '../config/database.js';
 const router = express.Router();
 
 /**
@@ -130,4 +130,4 @@ async function getBasicHealth() {
   };
 }
 
-module.exports = router;
+export default router;

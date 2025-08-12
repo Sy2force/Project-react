@@ -1,6 +1,6 @@
 import express from 'express';
 import Skill from '../models/Skill.js';
-import { optionalAuth } from '../middleware/auth.js';
+import { authenticateToken, optionalAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -21,4 +21,4 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

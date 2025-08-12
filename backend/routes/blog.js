@@ -1,6 +1,7 @@
 import express from 'express';
 import Post from '../models/Post.js';
 import { authenticateToken, optionalAuth } from '../middleware/auth.js';
+import { body, validationResult } from 'express-validator';
 import { requireRole } from '../middleware/rbac.js';
 import { validatePost, checkValidation } from '../utils/validators.js';
 import { writeLimiter } from '../middleware/rateLimit.js';
@@ -118,4 +119,109 @@ router.delete('/:id', authenticateToken, requireRole('admin'), writeLimiter, asy
   }
 });
 
-module.exports = router;
+// POST /api/posts/:id/like - Liker/unliker un article
+router.post('/:id/like', authenticateToken, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Article non trouvé' });
+    }
+
+    const userId = req.user.id;
+    const likeIndex = post.likes.indexOf(userId);
+
+    if (likeIndex > -1) {
+      // Retirer le like
+      post.likes.splice(likeIndex, 1);
+      post.likesCount = Math.max(0, post.likesCount - 1);
+    } else {
+      // Ajouter le like
+      post.likes.push(userId);
+      post.likesCount += 1;
+    }
+
+    await post.save();
+
+    res.json({
+      success: true,
+      data: {
+        liked: likeIndex === -1,
+        likesCount: post.likesCount
+      }
+    });
+  } catch (error) {
+    console.error('Erreur like article:', error);
+    res.status(500).json({ message: 'Erreur lors du like de l\'article' });
+  }
+});
+
+// POST /api/posts/:id/comments - Ajouter un commentaire
+router.post('/:id/comments', authenticateToken, async (req, res) => {
+  try {
+    const { content } = req.body;
+    
+    if (!content || content.trim().length === 0) {
+      return res.status(400).json({ message: 'Le contenu du commentaire est requis' });
+    }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Article non trouvé' });
+    }
+
+    const comment = {
+      author: req.user.id,
+      content: content.trim(),
+      createdAt: new Date()
+    };
+
+    post.comments.push(comment);
+    post.commentsCount = post.comments.length;
+    await post.save();
+
+    // Populer l'auteur du commentaire pour la réponse
+    await post.populate('comments.author', 'name email');
+    const newComment = post.comments[post.comments.length - 1];
+
+    res.status(201).json({
+      success: true,
+      data: newComment
+    });
+  } catch (error) {
+    console.error('Erreur ajout commentaire:', error);
+    res.status(500).json({ message: 'Erreur lors de l\'ajout du commentaire' });
+  }
+});
+
+// GET /api/posts/categories - Récupérer les catégories disponibles
+router.get('/categories', async (req, res) => {
+  try {
+    const categories = await Post.distinct('category', { status: 'published' });
+    res.json({
+      success: true,
+      data: categories.filter(cat => cat) // Filtrer les valeurs nulles
+    });
+  } catch (error) {
+    console.error('Erreur récupération catégories:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des catégories' });
+  }
+});
+
+// GET /api/posts/tags - Récupérer les tags disponibles
+router.get('/tags', async (req, res) => {
+  try {
+    const tags = await Post.distinct('tags', { status: 'published' });
+    const flatTags = tags.flat().filter(tag => tag);
+    const uniqueTags = [...new Set(flatTags)];
+    
+    res.json({
+      success: true,
+      data: uniqueTags.sort()
+    });
+  } catch (error) {
+    console.error('Erreur récupération tags:', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des tags' });
+  }
+});
+
+export default router;

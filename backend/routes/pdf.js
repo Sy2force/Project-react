@@ -68,4 +68,4 @@ router.post('/', writeLimiter, validatePdfRequest, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,407 +1,108 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { 
-  Home, 
-  CreditCard, 
-  Heart, 
-  Plus,
-  BookOpen, 
-  Mail, 
-  User,
-  Shield,
-  Github,
-  Linkedin,
-  Twitter,
-  Globe,
-  Phone,
-  MapPin
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Heart, Mail, Phone, MapPin, Github, Linkedin, Twitter } from 'lucide-react';
 
 const Footer = () => {
-  const { user } = useAuth();
   const currentYear = new Date().getFullYear();
 
-  // Links based on user role
-  const getNavigationLinks = () => {
-    const baseLinks = [
-      { path: '/home', label: 'Accueil', icon: Home },
-      { path: '/cards', label: 'Cartes Business', icon: CreditCard },
-      { path: '/blog', label: 'Blog', icon: BookOpen },
-      { path: '/contact', label: 'Contact', icon: Mail }
-    ];
-
-    if (user) {
-      baseLinks.push({ path: '/favorites', label: 'Mes Favoris', icon: Heart });
-      
-      if (user.role === 'business' || user.role === 'admin') {
-        baseLinks.push(
-          { path: '/my-cards', label: 'Mes Cartes', icon: CreditCard },
-          { path: '/cards/new', label: 'Créer une Carte', icon: Plus }
-        );
-      }
-
-      if (user.role === 'admin') {
-        baseLinks.push({ path: '/dashboard', label: 'Administration', icon: Shield });
-      }
-    }
-
-    return baseLinks;
-  };
-
-  const navigationLinks = getNavigationLinks();
-
-  const legalLinks = [
-    { path: '/legal/privacy', label: 'Politique de confidentialité' },
-    { path: '/legal/terms', label: 'Conditions d\'utilisation' },
-    { path: '/legal/cookies', label: 'Politique des cookies' },
-    { path: '/legal/accessibility', label: 'Accessibilité' }
-  ];
-
-  const socialLinks = [
-    { 
-      href: 'https://github.com/shayacoca', 
-      label: 'GitHub', 
-      icon: Github,
-      color: 'hover:text-gray-300'
-    },
-    { 
-      href: 'https://linkedin.com/in/shayacoca', 
-      label: 'LinkedIn', 
-      icon: Linkedin,
-      color: 'hover:text-blue-400'
-    },
-    { 
-      href: 'https://twitter.com/shayacoca', 
-      label: 'Twitter', 
-      icon: Twitter,
-      color: 'hover:text-blue-300'
-    }
-  ];
-
   return (
-    <footer 
-      style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(16px)'
-      }}
-      role="contentinfo"
-      aria-label="Pied de page du site"
-    >
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px 20px 24px' }}>
-        {/* Main Footer Content */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '32px',
-          marginBottom: '32px'
-        }}>
+    <footer className="relative mt-20 bg-gray-900/50 backdrop-blur-lg border-t border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid md:grid-cols-3 gap-8">
           {/* Brand Section */}
-          <div>
-            <Link 
-              to="/home" 
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '16px',
-                textDecoration: 'none'
-              }}
-              aria-label="Retour à l'accueil"
-            >
-              <div style={{
-                width: '40px',
-                height: '40px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-              }}>
-                <span style={{
-                  fontSize: '18px',
-                  fontWeight: '700',
-                  color: '#ffffff'
-                }}>
-                  S.A
-                </span>
+          <motion.div
+            className="space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center font-bold text-white text-lg shadow-lg">
+                S.A
               </div>
-              <span style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#ffffff'
-              }}>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Shay Acoca
               </span>
-            </Link>
-            
-            <p style={{
-              color: '#94a3b8',
-              fontSize: '16px',
-              lineHeight: '1.6',
-              margin: 0,
-              marginBottom: '20px'
-            }}>
-              Plateforme de cartes business numériques pour connecter les professionnels 
-              et développer votre réseau d'affaires.
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Créateur du futur digital. Développeur passionné par l'innovation et l'excellence technique.
             </p>
+          </motion.div>
 
-            {/* Contact Info */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Mail size={16} style={{ color: '#667eea' }} />
-                <a 
-                  href="mailto:contact@shayacoca.com"
-                  style={{
-                    color: '#94a3b8',
-                    textDecoration: 'none',
-                    fontSize: '14px'
-                  }}
-                  onMouseEnter={(e) => e.target.style.color = '#ffffff'}
-                  onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
-                >
-                  contact@shayacoca.com
-                </a>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Phone size={16} style={{ color: '#667eea' }} />
-                <a 
-                  href="tel:+972-50-123-4567"
-                  style={{
-                    color: '#94a3b8',
-                    textDecoration: 'none',
-                    fontSize: '14px'
-                  }}
-                  onMouseEnter={(e) => e.target.style.color = '#ffffff'}
-                  onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
-                >
-                  +972-50-123-4567
-                </a>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <MapPin size={16} style={{ color: '#667eea' }} />
-                <span style={{
-                  color: '#94a3b8',
-                  fontSize: '14px'
-                }}>
-                  Tel Aviv, Israël
-                </span>
+          {/* Contact Info */}
+          <motion.div
+            className="space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <h3 className="text-lg font-semibold text-white">Contact</h3>
+            <div className="space-y-3">
+              <a
+                href="mailto:shayacoca20@gmail.com"
+                className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors"
+              >
+                <Mail size={16} />
+                <span className="text-sm">shayacoca20@gmail.com</span>
+              </a>
+              <a
+                href="tel:053-3700551"
+                className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors"
+              >
+                <Phone size={16} />
+                <span className="text-sm">053-3700551</span>
+              </a>
+              <div className="flex items-center space-x-3 text-gray-400">
+                <MapPin size={16} />
+                <span className="text-sm">Jérusalem • Tel Aviv</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Navigation Links */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#ffffff',
-              margin: 0,
-              marginBottom: '16px'
-            }}>
-              Navigation
-            </h3>
-            <nav role="navigation" aria-label="Navigation du pied de page">
-              <ul style={{ 
-                listStyle: 'none', 
-                padding: 0, 
-                margin: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                {navigationLinks.map((link) => {
-                  const Icon = link.icon;
-                  return (
-                    <li key={link.path}>
-                      <Link
-                        to={link.path}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          color: '#94a3b8',
-                          textDecoration: 'none',
-                          fontSize: '14px',
-                          padding: '4px 0',
-                          transition: 'color 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => e.target.style.color = '#ffffff'}
-                        onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
-                        aria-label={link.label}
-                      >
-                        <Icon size={16} />
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#ffffff',
-              margin: 0,
-              marginBottom: '16px'
-            }}>
-              Informations légales
-            </h3>
-            <nav role="navigation" aria-label="Liens légaux">
-              <ul style={{ 
-                listStyle: 'none', 
-                padding: 0, 
-                margin: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                {legalLinks.map((link) => (
-                  <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      style={{
-                        color: '#94a3b8',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        padding: '4px 0',
-                        display: 'block',
-                        transition: 'color 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => e.target.style.color = '#ffffff'}
-                      onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Social Links & User Info */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              color: '#ffffff',
-              margin: 0,
-              marginBottom: '16px'
-            }}>
-              Suivez-nous
-            </h3>
-            
-            {/* Social Media */}
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              marginBottom: '20px'
-            }}>
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.href}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '40px',
-                      height: '40px',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      borderRadius: '8px',
-                      color: '#94a3b8',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-                      e.target.style.color = '#ffffff';
-                      e.target.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                      e.target.style.color = '#94a3b8';
-                      e.target.style.transform = 'translateY(0)';
-                    }}
-                    aria-label={`Suivre sur ${social.label}`}
-                    title={`Suivre sur ${social.label}`}
-                  >
-                    <Icon size={20} />
-                  </a>
-                );
-              })}
+          {/* Social Links */}
+          <motion.div
+            className="space-y-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h3 className="text-lg font-semibold text-white">Suivez-moi</h3>
+            <div className="flex space-x-4">
+              <a
+                href="#"
+                className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+              >
+                <Github size={18} />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+              >
+                <Twitter size={18} />
+              </a>
             </div>
-
-            {/* User Status */}
-            {user && (
-              <div style={{
-                padding: '12px',
-                background: 'rgba(102, 126, 234, 0.1)',
-                borderRadius: '8px',
-                border: '1px solid rgba(102, 126, 234, 0.2)'
-              }}>
-                <p style={{
-                  color: '#667eea',
-                  fontSize: '12px',
-                  margin: 0,
-                  marginBottom: '4px',
-                  fontWeight: '500'
-                }}>
-                  Connecté en tant que
-                </p>
-                <p style={{
-                  color: '#ffffff',
-                  fontSize: '14px',
-                  margin: 0,
-                  fontWeight: '600'
-                }}>
-                  {user.name} ({user.role})
-                </p>
-              </div>
-            )}
-          </div>
+          </motion.div>
         </div>
 
         {/* Bottom Bar */}
-        <div style={{
-          paddingTop: '24px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '16px'
-        }}>
-          <p style={{
-            color: '#94a3b8',
-            fontSize: '14px',
-            margin: 0
-          }}>
-            © {currentYear} Shay Acoca. Tous droits réservés.
+        <motion.div
+          className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <p className="text-gray-400 text-sm flex items-center">
+            © {currentYear} Shay Acoca. Fait avec <Heart size={16} className="mx-1 text-red-400" /> à Jérusalem
           </p>
-          
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            fontSize: '12px',
-            color: '#64748b'
-          }}>
-            <span>Fait avec ❤️ en Israël</span>
-            <span>•</span>
-            <span>Version 1.0.0</span>
-          </div>
-        </div>
+          <p className="text-gray-500 text-xs mt-2 md:mt-0">
+            Tous droits réservés
+          </p>
+        </motion.div>
       </div>
     </footer>
   );

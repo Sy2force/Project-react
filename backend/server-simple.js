@@ -6,21 +6,21 @@ const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const dbConnection = require('./config/database');
 
-// Load environment variables
+// Je charge mes variables d'environnement
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Security middleware
+// Middleware de sécurité
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false // Disable for development
+  contentSecurityPolicy: false // Désactivé pour le dev
 }));
 
 app.use(compression());
 
-// CORS configuration
+// Configuration CORS pour autoriser les requêtes frontend
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:3005'],
   credentials: true,
@@ -28,7 +28,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Rate limiting
+// Limitation du nombre de requêtes pour éviter le spam
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,
@@ -36,17 +36,17 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Body parsing
+// Parsing du body des requêtes
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Request logging
+// Je log toutes les requêtes pour le debug
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// Initialize MongoDB
+// Initialisation de MongoDB
 async function initializeDatabase() {
   try {
     await dbConnection.connect();
@@ -85,50 +85,107 @@ app.post('/api/contact', async (req, res) => {
     
     console.log('📬 New contact message:', { name, email, subject });
     
-    res.json({
-      success: true,
-      message: 'Message envoyé avec succès ! Je vous recontacterai sous 24-48h.',
-      timestamp: new Date().toISOString()
+    res.json({ 
+      success: true, 
+      message: 'Message reçu avec succès' 
     });
   } catch (error) {
-    console.error('Contact error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Erreur lors de l\'envoi du message'
+    console.error('Erreur contact:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Erreur lors de l\'envoi du message' 
     });
   }
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Shay Acoca Portfolio API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      contact: '/api/contact'
+app.post('/api/auth/register', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Utilisateur créé avec succès',
+    user: { id: 2, email: req.body.email, role: 'user', name: req.body.name }
+  });
+});
+
+// Mock projects routes
+app.get('/api/projects', (req, res) => {
+  res.json([
+    { 
+      id: 1, 
+      title: 'Portfolio React Complet', 
+      description: 'Site portfolio moderne avec authentification avancée et design glassmorphism', 
+      tech: ['React', 'Node.js', 'MongoDB', 'JWT'],
+      image: '/api/placeholder/400/300',
+      likes: 42,
+      status: 'completed'
+    },
+    { 
+      id: 2, 
+      title: 'App Mobile Innovante', 
+      description: 'Application mobile avec fonctionnalités avancées et UX moderne', 
+      tech: ['React Native', 'MongoDB', 'Express'],
+      image: '/api/placeholder/400/300',
+      likes: 28,
+      status: 'in-progress'
+    },
+    { 
+      id: 3, 
+      title: 'Système E-commerce', 
+      description: 'Plateforme e-commerce complète avec paiements sécurisés', 
+      tech: ['Next.js', 'Stripe', 'PostgreSQL'],
+      image: '/api/placeholder/400/300',
+      likes: 35,
+      status: 'completed'
     }
+  ]);
+});
+
+// Mock blog routes
+app.get('/api/blog', (req, res) => {
+  res.json([
+    {
+      id: 1,
+      title: 'L\'avenir du développement web',
+      excerpt: 'Découvrez les tendances qui façonnent le web de demain',
+      content: 'Le développement web évolue rapidement...',
+      author: 'Shay Acoca',
+      date: new Date().toISOString(),
+      category: 'Tech',
+      image: '/api/placeholder/600/400'
+    },
+    {
+      id: 2,
+      title: 'Design System et Glassmorphism',
+      excerpt: 'Comment créer des interfaces modernes et élégantes',
+      content: 'Le glassmorphism est une tendance design...',
+      author: 'Shay Acoca',
+      date: new Date().toISOString(),
+      category: 'Design',
+      image: '/api/placeholder/600/400'
+    }
+  ]);
+});
+
+// Mock analytics routes
+app.get('/api/analytics/stats', (req, res) => {
+  res.json({
+    totalProjects: 15,
+    totalViews: 2847,
+    totalLikes: 156,
+    totalUsers: 89
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    message: 'Route non trouvée',
-    path: req.originalUrl
+// Mock contact route
+app.post('/api/contact', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Message envoyé avec succès! Nous vous répondrons rapidement.'
   });
 });
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Server error:', err.message);
-  res.status(500).json({
-    message: 'Erreur interne du serveur'
-  });
-});
-
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-  console.log(`🔗 API Health: http://localhost:${PORT}/api/health`);
-  console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`✨ Frontend et Backend fusionnés avec succès!`);
 });
