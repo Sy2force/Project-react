@@ -1,351 +1,292 @@
-# 🚀 Mon Portfolio React - Le Projet qui m'a Fait Galérer (mais j'en suis fier !)
+# 🚀 הפורטפוליו שלי ב-React - הפרויקט שגרם לי להשתגע (אבל אני גאה בו!)
 
-Salut ! Alors voilà, ce projet... ça fait un moment que je bosse dessus et franchement, ça a pas toujours été facile. Entre les configurations qui marchent pas, les erreurs PostCSS qui me rendaient fou, et les serveurs qui se lancent sur n'importe quel port sauf celui que je veux... Bref, c'est du vécu !
+שלום! אז הנה, הפרויקט הזה... אני עובד עליו כבר הרבה זמן ולמען האמת, זה לא תמיד היה קל. בין קונפיגורציות שלא עובדות, שגיאות PostCSS שהפכו אותי למטורף, ושרתים שמתחילים על כל פורט חוץ מזה שאני רוצה... בקיצור, זה מהחיים!
 
-Mais au final, j'ai réussi à faire quelque chose de propre et je suis plutôt content du résultat. C'est mon portfolio personnel, fait avec React et Node.js, et j'ai mis pas mal de temps à peaufiner le design pour que ça soit vraiment clean.
+אבל בסוף, הצלחתי לעשות משהו נקי ואני די מרוצה מהתוצאה. זה הפורטפוליו האישי שלי, עשוי עם React ו-Node.js, ושמתי הרבה זמן לשפר את העיצוב כדי שזה יהיה באמת מושלם.
 
-## 🤔 Pourquoi ce projet ?
+**⚠️ חשוב לציין: האתר עדיין לא גמור לחלוטין! אני עדיין עובד על כמה דברים ומשפר פיצ'רים. זה עבודה בתהליך!**
 
-Alors en fait, j'avais besoin d'un portfolio pour montrer mes compétences, mais je voulais pas juste faire un truc basique avec du HTML/CSS. J'ai voulu me challenger et faire quelque chose de vraiment moderne avec React, parce que bon, c'est ça qu'on utilise en vrai dans les boîtes maintenant.
+## 🤔 למה הפרויקט הזה?
 
-Au début, je pensais que ça allait être simple... LOL ! J'ai passé des heures à galérer sur des trucs tout cons comme faire marcher Tailwind avec Vite, ou comprendre pourquoi mes animations Framer Motion saccadaient. Mais bon, c'est comme ça qu'on apprend, non ?
+אז למעשה, הייתי צריך פורטפוליו כדי להראות את הכישורים שלי, אבל לא רציתי לעשות משהו בסיסי עם HTML/CSS. רציתי לאתגר את עצמי ולעשות משהו באמת מודרני עם React, כי טוב, זה מה שמשתמשים בו באמת בחברות היום.
 
-## 🎨 Ce que j'ai réussi à faire
+בהתחלה, חשבתי שזה יהיה פשוט... LOL! ביליתי שעות להתמודד עם דברים מטופשים כמו לגרום ל-Tailwind לעבוד עם Vite, או להבין למה האנימציות של Framer Motion מקפצות. אבל טוב, ככה לומדים, לא?
 
-Après des semaines de galère (et quelques nuits blanches), voilà ce que j'ai dans mon portfolio :
+## 🎨 מה הצלחתי לעשות (עד כה - עדיין לא גמור!)
 
-### Le Design
-- **Style glassmorphism** - J'ai kiffé ce style moderne avec les effets de verre, ça donne un truc vraiment clean
-- **Thème sombre/clair** - Parce que tout le monde veut ça maintenant, et j'ai galéré à le faire persister correctement
-- **Responsive** - Ça marche sur mobile, tablette, desktop... J'ai testé sur tous mes appareils !
-- **Animations fluides** - Framer Motion, une fois qu'on comprend comment ça marche, c'est magique
+אחרי שבועות של מאבק (וכמה לילות לבנים), הנה מה שיש לי בפורטפוליו:
 
-### Les Fonctionnalités
-- **Authentification complète** - JWT, bcrypt, tout le tralala sécurisé
-- **Système de rôles** - User, Business, Admin (j'ai voulu faire les choses bien)
-- **Dashboard admin** - Pour gérer les utilisateurs et tout
-- **Recherche et filtres** - Sur les projets, ça marche vraiment bien
-- **Formulaires avancés** - Avec validation, gestion d'erreurs, tout ça
+### העיצוב
+- **סגנון glassmorphism** - התאהבתי בסגנון המודרני הזה עם אפקטי הזכוכית, זה נותן משהו באמת נקי
+- **תמה כהה/בהירה** - כי כולם רוצים את זה עכשיו, והתמודדתי לגרום לזה להישמר נכון
+- **רספונסיבי** - זה עובד על נייד, טאבלט, דסקטופ... בדקתי על כל המכשירים שלי!
+- **אנימציות חלקות** - Framer Motion, ברגע שמבינים איך זה עובד, זה קסום
 
-## 🏗️ Comment c'est organisé (et pourquoi j'ai fait comme ça)
+### הפונקציונליות (חלקן עדיין בעבודה)
+- **אימות מלא** - JWT, bcrypt, כל הביטחון המתקדם
+- **מערכת תפקידים** - User, Business, Admin (רציתי לעשות את זה נכון)
+- **דשבורד אדמין** - לנהל משתמשים והכל (עדיין מפתח את זה)
+- **חיפוש ומסננים** - על הפרויקטים, זה עובד באמת טוב
+- **טפסים מתקדמים** - עם ולידציה, טיפול בשגיאות, הכל
 
-### Le Frontend (Port 3001)
-Alors pour le frontend, j'ai organisé ça de façon logique (enfin j'espère) :
+**🚧 שימו לב: חלק מהפיצ'רים עדיין בפיתוח ויכול להיות שלא יעבדו לגמרי! אני עדיין עובד על זה.**
+
+## 🏗️ איך זה מאורגן (ולמה עשיתי ככה)
+
+### הפרונט-אנד (פורט 3001)
+אז בפרונט-אנד, ארגנתי את זה בצורה לוגית (לפחות אני מקווה):
 
 ```
 frontend/
 ├── src/
-│   ├── components/          # Tous mes composants réutilisables
-│   │   ├── NavbarAdvanced.jsx  # La navbar qui m'a pris 2 jours à faire
-│   │   ├── CarouselMini.jsx    # Un carrousel custom (parce que les libs existantes me plaisaient pas)
-│   │   └── ui/                 # Les trucs de base (Button, Card, etc.)
-│   ├── pages/               # Mes pages principales
-│   │   ├── HomeOptimized.jsx   # La page d'accueil avec tout le bling-bling
-│   │   ├── AboutOptimized.jsx  # Ma présentation (avec des onglets stylés)
-│   │   ├── ProjectsOptimized.jsx # Mes projets avec filtres qui marchent
-│   │   └── LoginAdvanced.jsx   # Connexion sécurisée (ça m'a pris du temps)
-│   ├── context/             # Pour gérer l'état global (Auth, Theme)
-│   ├── hooks/               # Mes hooks custom (useLocalStorage, etc.)
-│   ├── services/            # Pour parler avec l'API backend
-│   └── utils/               # Les petites fonctions utiles
+│   ├── components/          # כל הקומפוננטים הניתנים לשימוש חוזר
+│   │   ├── NavbarAdvanced.jsx  # הנאב-בר שלקח לי יומיים לעשות
+│   │   ├── CarouselMini.jsx    # קרוסלה מותאמת אישית (כי הספריות הקיימות לא מצאו חן בעיני)
+│   │   └── ui/                 # הדברים הבסיסיים (Button, Card, וכו')
+│   ├── pages/               # הדפים הראשיים שלי
+│   │   ├── HomeOptimized.jsx   # דף הבית עם כל הבלינג-בלינג
+│   │   ├── AboutOptimized.jsx  # ההצגה שלי (עם טאבים מעוצבים)
+│   │   ├── ProjectsOptimized.jsx # הפרויקטים שלי עם מסננים שעובדים
+│   │   └── LoginAdvanced.jsx   # התחברות מאובטחת (לקח לי זמן)
+│   ├── context/             # לנהל מצב גלובלי (Auth, Theme)
+│   ├── hooks/               # ההוקים המותאמים שלי (useLocalStorage, וכו')
+│   ├── services/            # לדבר עם ה-API של הבקאנד
+│   └── utils/               # פונקציות קטנות ושימושיות
 ```
 
-### Le Backend (Port 5000)
-Pour le backend, j'ai essayé de faire quelque chose de propre et maintenable :
+### הבקאנד (פורט 5000)
+בבקאנד, ניסיתי לעשות משהו נקי וניתן לתחזוקה:
 
 ```
 backend/
-├── routes/                  # Toutes mes routes API (13 au total)
-│   ├── auth.js             # Connexion, inscription, JWT
-│   ├── projects.js         # CRUD des projets
-│   ├── users.js            # Gestion des utilisateurs
-│   └── ...                 # Et plein d'autres
-├── models/                  # Mes modèles MongoDB (7 modèles)
-│   ├── User.js             # Le modèle utilisateur avec rôles
-│   ├── Project.js          # Pour mes projets
+├── routes/                  # כל הנתיבים של ה-API שלי (13 בסך הכל)
+│   ├── auth.js             # התחברות, הרשמה, JWT
+│   ├── projects.js         # CRUD של הפרויקטים
+│   ├── users.js            # ניהול משתמשים
+│   └── ...                 # ועוד הרבה אחרים
+├── models/                  # המודלים של MongoDB שלי (7 מודלים)
+│   ├── User.js             # מודל המשתמש עם תפקידים
+│   ├── Project.js          # בשביל הפרויקטים שלי
 │   └── ...
-├── controllers/             # La logique métier
-├── middleware/              # Auth, validation, sécurité
-└── utils/                   # Fonctions utilitaires
+├── controllers/             # הלוגיקה העסקית
+├── middleware/              # Auth, ולידציה, ביטחון
+└── utils/                   # פונקציות עזר
 ```
 
-## 🛠️ Les Technologies (et mes galères avec)
+## 🛠️ הטכנולוגיות (והגלעות שלי איתן)
 
-### Côté Frontend
-- **React 18.3.1** - Bon ça c'est la base, j'adore les hooks maintenant
-- **Vite** - Plus jamais Webpack ! Vite c'est tellement plus rapide pour le dev
-- **Framer Motion** - Pour les animations, une fois qu'on pige la logique c'est génial
-- **React Router v7** - La navigation SPA, j'ai galéré avec les nouvelles syntaxes mais ça va
-- **Lucide React** - Des icônes propres, fini les Font Awesome qui pèsent 500ko
-- **Axios** - Pour les requêtes API, plus fiable que fetch() selon moi
+### צד הפרונט-אנד
+- **React 18.3.1** - טוב זה הבסיס, אני מאוהב בהוקים עכשיו
+- **Vite** - לעולם לא עוד Webpack! Vite הרבה יותר מהיר לפיתוח
+- **Framer Motion** - לאנימציות, ברגע שמבינים את הלוגיקה זה גאוני
+- **React Router v7** - ניווט SPA, התמודדתי עם התחביר החדש אבל זה בסדר
+- **Lucide React** - איקונים נקיים, נגמר עם Font Awesome שמשקל 500kb
+- **Axios** - לבקשות API, יותר אמין מ-fetch() לדעתי
 
-### Côté Backend  
-- **Node.js** - JavaScript partout, j'aime bien cette philosophie
-- **Express.js** - Simple et efficace, pas besoin de se compliquer la vie
-- **MongoDB** - NoSQL c'est parfait pour ce type de projet
-- **Mongoose** - L'ODM qui sauve la vie, les schémas c'est pratique
-- **JWT** - Pour l'auth, sécurisé et stateless
-- **Bcrypt** - Hachage des mots de passe, sécurité oblige
-- **Helmet** - Sécurité HTTP, quelques headers en plus ça fait pas de mal
-- **CORS** - Sinon le navigateur gueule, on connaît la chanson
+### צד הבקאנד
+- **Node.js** - JavaScript בכל מקום, אני אוהב את הפילוסופיה הזו
+- **Express.js** - פשוט ויעיל, אין צורך לסבך את החיים
+- **MongoDB** - NoSQL מושלם לסוג הפרויקט הזה
+- **Mongoose** - ה-ODM שמציל חיים, הסכמות זה נוח
+- **JWT** - לאימות, מאובטח וללא מצב
+- **Bcrypt** - הצפנת סיסמאות, ביטחון חובה
+- **Helmet** - ביטחון HTTP, כמה headers נוספים לא מזיקים
+- **CORS** - אחרת הדפדפן צועק, אנחנו מכירים את השיר
 
-## 😅 Mes Plus Grosses Galères
+## 😅 הגלעות הכי גדולות שלי
 
-### Le Drame PostCSS/Tailwind
-Alors ça... J'ai passé LITTÉRALEMENT des heures sur cette merde. PostCSS qui marchait pas avec Vite, Tailwind qui se chargeait pas, des erreurs de build partout. Au final j'ai tout viré et je suis passé en CSS pur. Parfois la simplicité c'est mieux !
+### הדרמה של PostCSS/Tailwind
+אז זה... ביליתי ממש שעות על החרא הזה. PostCSS שלא עבד עם Vite, Tailwind שלא נטען, שגיאות build בכל מקום. בסוף זרקתי הכל ועברתי ל-CSS טהור. לפעמים פשטות זה יותר טוב!
 
-### Les Ports qui Changent Tout le Temps
-Au début j'avais le frontend sur 3000, puis 5173, puis 3001... Le backend tantôt sur 5000, tantôt sur 5001. J'ai fini par forcer le port 3001 pour le frontend et 5000 pour le backend dans la config. Maintenant ça bouge plus !
+### הפורטים שמשתנים כל הזמן
+בהתחלה היה לי הפרונט-אנד על 3000, אחר כך 5173, אחר כך 3001... הבקאנד פעם על 5000, פעם על 5001. בסוף כפיתי את פורט 3001 לפרונט-אנד ו-5000 לבקאנד בקונפיגורציה. עכשיו זה לא זז יותר!
 
-### Framer Motion et les Re-renders
-Les animations qui saccadaient, les composants qui se re-renderaient pour rien... J'ai appris à utiliser `useMemo` et `useCallback` à force de débugger. Maintenant tout est fluide !
+### Framer Motion וה-Re-renders
+אנימציות שמקפצות, קומפוננטים שמתרנדרים בחינם... למדתי להשתמש ב-`useMemo` ו-`useCallback` בכוח של דיבאג. עכשיו הכל חלק!
 
-### MongoDB et les Connexions
-"MongooseError: buffering timed out"... Si tu vois ça, tu sais que tu vas passer une mauvaise soirée. J'ai fini par comprendre qu'il fallait bien configurer les options de connexion.
+### MongoDB והחיבורים
+"MongooseError: buffering timed out"... אם אתם רואים את זה, אתם יודעים שאתם הולכים לבלות ערב רע. בסוף הבנתי שצריך לקנפג נכון את אפשרויות החיבור.
 
-## 🚀 Comment faire tourner ce truc chez toi
+## 🚀 איך להפעיל את הדבר הזה אצלכם
 
-Bon alors, si tu veux tester mon portfolio sur ta machine, voilà comment faire. J'ai essayé de simplifier au maximum parce que je sais que les installations qui marchent pas, c'est chiant.
+טוב אז, אם אתם רוצים לבדוק את הפורטפוליו שלי במכונה שלכם, הנה איך לעשות זאת. ניסיתי לפשט כמה שיותר כי אני יודע שהתקנות שלא עובדות, זה מעצבן.
 
-### Ce qu'il te faut avant
-- **Node.js 18+** (ou plus récent, ça marche)
-- **MongoDB** (j'utilise la version 7.0 mais les autres devraient marcher)
-- **Git** (pour cloner le repo)
+### מה שאתם צריכים לפני
+- **Node.js 18+** (או יותר חדש, זה עובד)
+- **MongoDB** (אני משתמש בגרסה 7.0 אבל אחרות אמורות לעבוד)
+- **Git** (לשכפל את הרפו)
 
-### Installation (étape par étape)
+### התקנה (צעד אחר צעד)
 
-**1. Récupérer le code**
+**1. לקבל את הקוד**
 ```bash
 git clone https://github.com/Sy2force/Project-react.git
 cd Project-react/project-root
 ```
 
-**2. Setup du Backend**
+**2. הגדרת הבקאנד**
 ```bash
 cd backend
 npm install
-# Copie le fichier d'exemple et configure tes variables
+# העתק את קובץ הדוגמה וקנפג את המשתנים שלך
 cp .env.example .env
-# Édite le .env avec tes infos (MongoDB, JWT secret, etc.)
+# ערוך את ה-.env עם המידע שלך (MongoDB, JWT secret, וכו')
 npm run dev
 ```
 
-**3. Setup du Frontend** (dans un autre terminal)
+**3. הגדרת הפרונט-אנד** (בטרמינל אחר)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 🌐 Où aller après
-- **Le site** : http://localhost:3001 (c'est là que tout se passe)
-- **L'API** : http://localhost:5000 (si tu veux tester les endpoints)
+### 🌐 לאן ללכת אחרי
+- **האתר** : http://localhost:3001 (כאן הכל קורה)
+- **ה-API** : http://localhost:5000 (אם אתם רוצים לבדוק את הנקודות הקצה)
 
-### ⚠️ Si ça marche pas
+### ⚠️ אם זה לא עובד
 
-**MongoDB pas connecté ?**
-- Assure-toi que MongoDB tourne sur ta machine
-- Vérifie l'URL dans ton `.env`
-- Parfois il faut créer la base de données à la main
+**MongoDB לא מחובר?**
+- וודאו ש-MongoDB רץ במכונה שלכם
+- בדקו את ה-URL ב-.env שלכם
+- לפעמים צריך ליצור את בסיס הנתונים ידנית
 
-**Port déjà utilisé ?**
-- Change les ports dans `vite.config.js` (frontend) ou `.env` (backend)
-- Ou tue les processus qui squattent tes ports
+**פורט כבר בשימוש?**
+- שנו את הפורטים ב-`vite.config.js` (פרונט-אנד) או `.env` (בקאנד)
+- או הרגו את התהליכים שתופסים את הפורטים שלכם
 
-**Erreurs de build ?**
-- Supprime `node_modules` et `package-lock.json`
-- Relance `npm install`
-- Si ça marche toujours pas, viens me voir sur GitHub
+**שגיאות build?**
+- מחקו `node_modules` ו-`package-lock.json`
+- הפעילו שוב `npm install`
+- אם זה עדיין לא עובד, בואו אליי ב-GitHub
 
-## ⚙️ Configuration (les trucs importants)
+## ⚙️ קונפיגורציה (הדברים החשובים)
 
-### Variables d'environnement Backend
-Crée un fichier `.env` dans le dossier `backend/` avec ça :
+### משתני סביבה של הבקאנד
+צרו קובץ `.env` בתיקיית `backend/` עם זה:
 
 ```env
 NODE_ENV=development
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/portfolio
-JWT_SECRET=ton-secret-super-securise-change-le-en-prod
+JWT_SECRET=הסוד-הסופר-מאובטח-שלכם-שנו-אותו-בפרודקשן
 JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:3001
 ```
 
-**Important** : Change le `JWT_SECRET` ! Mets un truc compliqué, pas "123456" comme moi au début 😅
+**חשוב**: שנו את ה-`JWT_SECRET`! שימו משהו מסובך, לא "123456" כמו שעשיתי בהתחלה 😅
 
-## 🎨 Ce qu'il y a dans le site
+## 🎨 מה יש באתר
 
-### Les Pages Principales
-- **🏠 Accueil** - Ma page d'accueil avec un hero stylé, des stats qui bougent, et mes services
-- **👤 À Propos** - Ma présentation avec des onglets (compétences, valeurs, timeline)
-- **💼 Projets** - Mes projets avec des filtres qui marchent vraiment (par techno, statut, etc.)
-- **📝 Blog** - Une section blog (bon pour l'instant c'est du contenu de demo)
-- **📞 Contact** - Un formulaire de contact qui envoie vraiment des mails
-- **🔐 Connexion** - Page de login/register sécurisée avec validation
+### הדפים הראשיים
+- **🏠 בית** - דף הבית שלי עם hero מעוצב, סטטיסטיקות שזזות, והשירותים שלי
+- **👤 אודות** - ההצגה שלי עם טאבים (כישורים, ערכים, ציר זמן)
+- **💼 פרויקטים** - הפרויקטים שלי עם מסננים שעובדים באמת (לפי טכנולוגיה, סטטוס, וכו')
+- **📝 בלוג** - חלק בלוג (טוב לעכשיו זה תוכן דמו)
+- **📞 יצירת קשר** - טופס יצירת קשר ששולח באמת מיילים
+- **🔐 התחברות** - דף login/register מאובטח עם ולידציה
 
-### Les Pages Utilisateur (une fois connecté)
-- **👤 Profil** - Pour modifier ses infos, photo, etc.
-- **⭐ Favoris** - Les projets qu'on a likés
-- **📊 Dashboard** - Tableau de bord selon ton rôle (user/business/admin)
-- **🎯 Mes Cartes** - Si t'es business, tu peux créer tes propres cartes
+### דפי המשתמש (אחרי התחברות)
+- **👤 פרופיל** - לשנות מידע, תמונה, וכו'
+- **⭐ מועדפים** - הפרויקטים שעשינו להם לייק
+- **📊 דשבורד** - לוח בקרה לפי התפקיד שלכם (user/business/admin)
+- **🎯 הכרטיסים שלי** - אם אתם business, אתם יכולים ליצור כרטיסים משלכם
 
-## 🔐 Le Système d'Auth (j'en suis fier)
+## 🔐 מערכת האימות (אני גאה בזה)
 
-J'ai fait un système de rôles à 3 niveaux :
-- **👤 User** - Accès de base, peut voir les projets, commenter
-- **💼 Business** - Peut créer des cartes, accès à des fonctionnalités pro
-- **🛡️ Admin** - Accès total, dashboard admin, gestion des utilisateurs
+עשיתי מערכת תפקידים ב-3 רמות:
+- **👤 User** - גישה בסיסית, יכול לראות פרויקטים, להגיב
+- **💼 Business** - יכול ליצור כרטיסים, גישה לפונקציות מקצועיות
+- **🛡️ Admin** - גישה מלאה, דשבורד אדמין, ניהול משתמשים
 
-La sécurité c'est du sérieux :
-- JWT avec expiration (7 jours par défaut)
-- Mots de passe hachés avec bcrypt (salt rounds = 12)
-- Rate limiting sur les routes sensibles
-- Validation des données côté client ET serveur
-- Headers de sécurité avec Helmet
+הביטחון זה עניין רציני:
+- JWT עם תפוגה (7 ימים כברירת מחדל)
+- סיסמאות מוצפנות עם bcrypt (salt rounds = 12)
+- Rate limiting על נתיבים רגישים
+- ולידציה של נתונים בצד הלקוח והשרת
+- headers ביטחון עם Helmet
 
-## 📱 Responsive et Tout
+## 📱 רספונסיבי והכל
 
-J'ai fait ça mobile-first parce que bon, tout le monde est sur son téléphone maintenant :
-- **Mobile** (320px+) - Tout fonctionne, menu hamburger, etc.
-- **Tablette** (768px+) - Layout adapté, plus d'espace
-- **Desktop** (1024px+) - Full layout avec sidebar, etc.
-- **Large** (1440px+) - Pour les grands écrans, ça scale bien
+עשיתי את זה mobile-first כי טוב, כולם על הטלפון עכשיו:
+- **נייד** (320px+) - הכל עובד, תפריט המבורגר, וכו'
+- **טאבלט** (768px+) - פריסה מותאמת, יותר מקום
+- **דסקטופ** (1024px+) - פריסה מלאה עם sidebar, וכו'
+- **גדול** (1440px+) - למסכים גדולים, זה מתרחב יפה
 
-Le design glassmorphism, j'ai kiffé le faire. Ces effets de verre avec le backdrop-filter, ça donne un truc vraiment moderne.
+העיצוב glassmorphism, התאהבתי לעשות אותו. האפקטים האלה של זכוכית עם backdrop-filter, זה נותן משהו באמת מודרני.
 
-## 🚀 Pour mettre en prod
+## 🚀 לשים בפרודקשן
 
-Si tu veux déployer ça quelque part :
+אם אתם רוצים לפרוס את זה איפשהו:
 
-**Build du frontend :**
+**Build של הפרונט-אנד:**
 ```bash
 cd frontend
 npm run build
-# Les fichiers sont dans dist/
+# הקבצים ב-dist/
 ```
 
-**Lancer le backend en prod :**
+**להפעיל את הבקאנד בפרודקשן:**
 ```bash
 cd backend
 NODE_ENV=production npm start
 ```
 
-**Avec Docker (j'ai fait les configs) :**
+**עם Docker (עשיתי את הקונפיגורציות):**
 ```bash
 docker-compose up -d
-# Ça lance tout : MongoDB + Backend + Frontend
+# זה מפעיל הכל: MongoDB + Backend + Frontend
 ```
 
-## 📊 Performance (j'ai optimisé)
+## 📊 ביצועים (אופטמתי)
 
-J'ai fait attention aux perfs parce que personne aime attendre :
-- **Lighthouse Score** : 95+ (j'en suis fier)
-- **Images optimisées** avec lazy loading
-- **Code splitting** avec React.lazy()
-- **Animations 60fps** avec Framer Motion
-- **Bundle size** raisonnable (pas de libs inutiles)
+שמתי לב לביצועים כי אף אחד לא אוהב לחכות:
+- **ציון Lighthouse**: 95+ (אני גאה בזה)
+- **תמונות מאופטמות** עם lazy loading
+- **Code splitting** עם React.lazy()
+- **אנימציות 60fps** עם Framer Motion
+- **גודל Bundle** סביר (בלי ספריות מיותרות)
 
-## 🤔 Ce que j'ai appris
+## 🤔 מה למדתי
 
-Ce projet m'a appris plein de trucs :
-- **React avancé** - Hooks custom, Context, optimisations
-- **Node.js/Express** - API REST, middleware, sécurité
-- **MongoDB** - Modélisation NoSQL, agrégations
-- **Authentification** - JWT, bcrypt, sessions
-- **Design moderne** - Glassmorphism, animations, UX
-- **DevOps** - Docker, déploiement, monitoring
+הפרויקט הזה לימד אותי הרבה דברים:
+- **React מתקדם** - Hooks מותאמים, Context, אופטימיזציות
+- **Node.js/Express** - API REST, middleware, ביטחון
+- **MongoDB** - מודלינג NoSQL, צבירות
+- **אימות** - JWT, bcrypt, sessions
+- **עיצוב מודרני** - Glassmorphism, אנימציות, UX
+- **DevOps** - Docker, פריסה, מוניטורינג
 
-## 🐛 Bugs connus (oui il y en a)
+## 🐛 באגים ידועים (כן יש כאלה)
 
-- Parfois les animations saccadent sur mobile (je bosse dessus)
-- Le thème dark/light peut bugger au premier chargement
-- Les notifications push marchent pas encore (c'est prévu)
-- Sur Safari, certains effets CSS marchent pas parfaitement
+- לפעמים האנימציות מקפצות על נייד (אני עובד על זה)
+- התמה הכהה/בהירה יכולה לבאג בטעינה הראשונה
+- התראות push עדיין לא עובדות (זה מתוכנן)
+- ב-Safari, חלק מהאפקטים של CSS לא עובדים בצורה מושלמת
 
-## 💬 Me contacter
+## 💬 ליצור איתי קשר
 
-Si tu veux discuter du projet, poser des questions, ou juste dire salut :
+אם אתם רוצים לדבר על הפרויקט, לשאול שאלות, או סתם להגיד שלום:
 
-**Shaya Coca**
+**שיא כוכא**
 - GitHub: [@Sy2force](https://github.com/Sy2force)
-- Email: [ton-email@example.com] (remplace par ton vrai mail)
-- Portfolio: Ce projet justement ! 😄
+- Email: [המייל-שלכם@example.com] (החליפו במייל האמיתי שלכם)
+- פורטפוליו: הפרויקט הזה בדיוק! 😄
 
-## 🙏 Merci à...
+## 🙏 תודה ל...
 
-- **La communauté React** - Pour ce framework génial
-- **Framer Motion** - Pour les animations qui claquent
-- **MongoDB** - Pour la base de données flexible
-- **Stack Overflow** - Pour m'avoir sauvé 1000 fois
-- **Tous ceux qui vont tester** - Et me dire ce qui marche pas !
-
----
-
-**PS :** Si ce projet t'a plu, n'hésite pas à mettre une étoile sur GitHub ! Ça fait toujours plaisir et ça motive à continuer 🌟
-
-**PPS :** Et si tu trouves des bugs ou que tu veux contribuer, les PR sont les bienvenues ! Je mords pas 😊
-
-Pour faire tourner le projet chez toi :
-
-1. Clone le repo
-```bash
-git clone [ton-repo]
-cd project-root
-```
-
-2. Installe les dépendances du backend
-```bash
-cd backend
-npm install
-```
-
-3. Installe les dépendances du frontend
-```bash
-cd ../frontend
-npm install
-```
-
-4. Lance le backend
-```bash
-cd ../backend
-npm start
-```
-
-5. Lance le frontend (dans un autre terminal)
-```bash
-cd frontend
-npm run dev
-```
-
-Le site sera accessible sur `http://localhost:3000`
-
-## Structure du projet
-
-```
-project-root/
-├── backend/          # API et serveur
-├── frontend/         # Interface React
-└── postman/          # Tests API
-```
-
-## Fonctionnalités
-
-- Page d'accueil avec mes projets
-- Section blog pour mes articles
-- Système de connexion/inscription
-- Dashboard admin (pour moi)
-- Responsive design (ça marche sur mobile)
-
-## Notes perso
-
-J'ai essayé de garder le code propre et bien organisé. Si tu vois des trucs bizarres ou des améliorations possibles, n'hésite pas à me faire signe !
-
-Le design est inspiré de ce que j'aime bien - moderne mais pas trop flashy. J'ai mis l'accent sur l'expérience utilisateur.
-
-## Contact
-
-Si tu as des questions ou des suggestions, tu peux me contacter via le formulaire sur le site ou directement par email.
+- **קהילת React** - על הפריימוורק הגאוני הזה
+- **Framer Motion** - על האנימציות שמדהימות
+- **MongoDB** - על בסיס הנתונים הגמיש
+- **Stack Overflow** - על שהציל אותי 1000 פעמים
+- **כל מי שיבדוק** - ויגיד לי מה לא עובד!
 
 ---
 
-Fait avec ❤️ par Shay Acoca
+**נ.ב.:** אם הפרויקט הזה מצא חן בעיניכם, אל תהססו לשים כוכב ב-GitHub! זה תמיד עושה שמח ומניע להמשיך 🌟
+
+**נ.ב.ב.:** ואם אתם מוצאים באגים או רוצים לתרום, PR-ים מוזמנים! אני לא נושך 😊
+
+**נ.ב.ב.ב.:** זכרו - האתר עדיין לא גמור! אני עדיין עובד על הרבה דברים ומשפר פיצ'רים. תהיו סבלניים איתי! 🚧
