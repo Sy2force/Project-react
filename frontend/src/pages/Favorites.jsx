@@ -66,10 +66,38 @@ const Favorites = () => {
     setFilteredFavorites(filtered);
   };
 
-  const handleRemoveFavorite = (favoriteId) => {
+  const handleRemoveFavorite = async (favoriteId) => {
     if (window.confirm('Retirer cette carte de vos favoris ?')) {
+      // Optimistic update - retirer immédiatement de l'UI
+      const originalFavorites = [...favorites];
+      const originalFiltered = [...filteredFavorites];
+      
       setFavorites(prev => prev.filter(fav => fav.id !== favoriteId));
       setFilteredFavorites(prev => prev.filter(fav => fav.id !== favoriteId));
+      
+      try {
+        // Appel API pour retirer des favoris en DB
+        const response = await fetch(`http://localhost:5001/api/favorites/${favoriteId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Erreur lors de la suppression');
+        }
+        
+        // Succès - toast de confirmation
+        console.log('Favori retiré avec succès');
+      } catch (error) {
+        // Erreur - restaurer l'état original
+        console.error('Erreur lors de la suppression du favori:', error);
+        setFavorites(originalFavorites);
+        setFilteredFavorites(originalFiltered);
+        alert('Erreur lors de la suppression du favori. Veuillez réessayer.');
+      }
     }
   };
 

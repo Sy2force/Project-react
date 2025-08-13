@@ -78,16 +78,21 @@ const LoginAdvanced = () => {
   const validateForm = () => {
     const newErrors = {};
     
+    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email requis';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email invalide';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Format email invalide';
     }
     
+    // Password validation with strict requirements
     if (!formData.password) {
       newErrors.password = 'Mot de passe requis';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Minimum 6 caractères';
+    } else {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_-])[A-Za-z\d!@#$%^&*_-]{8,}$/;
+      if (!passwordRegex.test(formData.password)) {
+        newErrors.password = 'Le mot de passe doit contenir au moins 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial (!@#$%^&*_-)';
+      }
     }
     
     setErrors(newErrors);

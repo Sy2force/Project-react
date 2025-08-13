@@ -51,14 +51,31 @@ const NavbarAdvanced = () => {
     { name: 'Showcase', path: '/showcase', icon: Sparkles, special: true }
   ];
 
-  // User menu items
-  const userMenuItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: Home },
-    { name: 'Profil', path: '/profile', icon: User },
-    { name: 'Mes Cartes', path: '/my-cards', icon: FolderOpen },
-    { name: 'Favoris', path: '/favorites', icon: Heart },
-    { name: 'Paramètres', path: '/settings', icon: Settings }
-  ];
+  // User menu items based on role
+  const getUserMenuItems = () => {
+    if (!isAuthenticated) return [];
+    
+    const baseItems = [
+      { name: 'Dashboard', path: '/dashboard', icon: Home },
+      { name: 'Profil', path: '/profile', icon: User },
+      { name: 'Favoris', path: '/favorites', icon: Heart }
+    ];
+
+    // Business role gets additional menu items
+    if (user?.role === 'business' || user?.role === 'admin') {
+      baseItems.splice(2, 0, { name: 'Mes Cartes', path: '/my-cards', icon: FolderOpen });
+    }
+
+    // Admin role gets additional admin items
+    if (user?.role === 'admin') {
+      baseItems.push({ name: 'Admin Panel', path: '/admin', icon: Shield });
+    }
+
+    baseItems.push({ name: 'Paramètres', path: '/settings', icon: Settings });
+    return baseItems;
+  };
+
+  const userMenuItems = getUserMenuItems();
 
   // Handle scroll effect
   useEffect(() => {
@@ -437,9 +454,36 @@ const NavbarAdvanced = () => {
                 }}>
                   {user?.name?.charAt(0) || 'U'}
                 </div>
-                <span style={{ fontSize: '0.95rem', fontWeight: '500' }}>
-                  {user?.name || 'Utilisateur'}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>
+                    {user?.name || 'Utilisateur'}
+                  </span>
+                  {/* Role Badge */}
+                  <span style={{
+                    fontSize: '0.75rem',
+                    padding: '0.125rem 0.5rem',
+                    borderRadius: '12px',
+                    background: user?.role === 'admin' 
+                      ? 'rgba(239, 68, 68, 0.2)' 
+                      : user?.role === 'business' 
+                        ? 'rgba(34, 197, 94, 0.2)' 
+                        : 'rgba(59, 130, 246, 0.2)',
+                    color: user?.role === 'admin' 
+                      ? '#ef4444' 
+                      : user?.role === 'business' 
+                        ? '#22c55e' 
+                        : '#3b82f6',
+                    border: `1px solid ${user?.role === 'admin' 
+                      ? 'rgba(239, 68, 68, 0.3)' 
+                      : user?.role === 'business' 
+                        ? 'rgba(34, 197, 94, 0.3)' 
+                        : 'rgba(59, 130, 246, 0.3)'}`,
+                    fontWeight: '600',
+                    textTransform: 'uppercase'
+                  }}>
+                    {user?.role === 'admin' ? '👑 Admin' : user?.role === 'business' ? '💼 Business' : '👤 User'}
+                  </span>
+                </div>
                 <ChevronDown size={16} />
               </motion.button>
 

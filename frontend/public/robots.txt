@@ -1,0 +1,47 @@
+# [EXAM] Fichier robots.txt pour le SEO et l'indexation
+User-agent: *
+Allow: /
+
+# [EXAM] Pages à ne pas indexer (privées/utilisateur)
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /favorites
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+
+# [EXAM] Fichiers et dossiers techniques
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+Disallow: /.well-known/
+Disallow: /admin/
+
+# [EXAM] Sitemap
+Sitemap: https://shayacoca.com/sitemap.xml
+
+# [EXAM] Délai entre les requêtes (en secondes)
+Crawl-delay: 1
+
+# [EXAM] Règles spécifiques pour les principaux moteurs de recherche
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+# [EXAM] Blocage des bots malveillants
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

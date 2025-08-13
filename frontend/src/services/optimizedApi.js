@@ -23,24 +23,63 @@ api.interceptors.request.use(
   }
 );
 
+// Fonction toast simple pour les notifications
+const showToast = (message, type = 'error') => {
+  // Créer un toast simple si aucune librairie de toast n'est disponible
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+    ${type === 'success' ? 'background: #10b981;' : 'background: #ef4444;'}
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  // Supprimer après 3 secondes
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+};
+
 // Intercepteur de réponse pour gérer les erreurs globalement
 api.interceptors.response.use(
   (response) => {
+    // Toast de succès pour certaines opérations
+    if (response.config.method !== 'get' && response.status >= 200 && response.status < 300) {
+      const operation = response.config.method.toUpperCase();
+      if (operation === 'POST') showToast('✅ Création réussie', 'success');
+      if (operation === 'PUT') showToast('✅ Modification réussie', 'success');
+      if (operation === 'DELETE') showToast('✅ Suppression réussie', 'success');
+    }
     return response;
   },
   (error) => {
-    // Gestion des erreurs d'authentification
+    // Toast d'erreur avec message approprié
+    let errorMessage = 'Une erreur est survenue';
+    
     if (error.response?.status === 401) {
+      errorMessage = '🔒 Session expirée, reconnexion requise';
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
-    }
-    
-    // Gestion des erreurs serveur
-    if (error.response?.status >= 500) {
+      setTimeout(() => window.location.href = '/login', 1500);
+    } else if (error.response?.status === 403) {
+      errorMessage = '🚫 Accès non autorisé';
+    } else if (error.response?.status === 404) {
+      errorMessage = '🔍 Ressource non trouvée';
+    } else if (error.response?.status >= 500) {
+      errorMessage = '🔧 Erreur serveur, veuillez réessayer';
       console.error('Erreur serveur:', error.response.data);
+    } else if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
     }
     
+    showToast(errorMessage, 'error');
     return Promise.reject(error);
   }
 );

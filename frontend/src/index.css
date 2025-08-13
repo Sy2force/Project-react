@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
+@import "tailwindcss";
+
+/* Styles ultra-modernes pour LoginUltraModern */
+@layer utilities {
+  .bg-gradient-radial {
+    background: radial-gradient(circle at center, var(--tw-gradient-stops));
+  }
+  
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+}
+
 /* Reset et base */
 * {
   margin: 0;
@@ -300,6 +319,17 @@ body {
 
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
+}
+
+/* [EXAM] a11y focus */
+:focus-visible { 
+  outline: 3px solid rgba(59,130,246,.8); 
+  outline-offset: 2px; 
+}
+
+/* [EXAM] smooth */
+html { 
+  scroll-behavior: smooth; 
 }
 
 /* Boutons modernes */

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import authService from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -18,39 +19,72 @@ export const useAuth = () => {
 };
 
 export function AuthProvider({ children }) {
-  // Je récupère l'utilisateur depuis le localStorage au démarrage
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  // État utilisateur (ne pas stocker en localStorage)
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Je sauvegarde l'utilisateur dans le localStorage quand il change
+  // [EXAM] Vérifier le token JWT au démarrage avec authService
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
+    const initializeAuth = async () => {
+      try {
+        if (authService.isAuthenticated()) {
+          const userData = authService.getUserFromToken();
+          if (userData) {
+            setUser(userData);
+          } else {
+            // Essayer de récupérer le profil depuis l'API
+            const result = await authService.getCurrentUser();
+            if (result.success) {
+              setUser(result.user);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Erreur initialisation auth:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const login = (userData) => {
-    // userData peut être un string (role) ou un objet complet
-    if (typeof userData === 'string') {
-      setUser({ 
-        name: "Shay Acoca", 
-        email: "shay@example.com",
-        role: userData,
-        id: Date.now() // ID temporaire pour les tests
-      });
-    } else {
-      setUser(userData);
+    initializeAuth();
+  }, []);
+
+  // [EXAM] Login avec authService complet
+  const login = async (email, password, userData = null) => {
+    try {
+      let result;
+      
+      if (userData && userData.token && userData.user) {
+        // Authentification déjà effectuée, juste stocker les données
+        setUser(userData.user);
+        return true;
+      } else {
+        // Appel au service d'authentification
+        result = await authService.login(email, password);
+        
+        if (result.success && result.user) {
+          setUser(result.user);
+          return true;
+        } else {
+          console.error('Échec de la connexion:', result.message);
+          return false;
+        }
+      }
+    } catch (error) {
+      console.error('Erreur de connexion:', error);
+      return false;
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+  // [EXAM] Logout avec authService
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('Erreur de déconnexion:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
   // Fonctions utilitaires pour vérifier les permissions

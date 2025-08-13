@@ -3,30 +3,41 @@
   "version": "1.0.0",
   "description": "Backend API pour Shay Acoca - Créateur du Futur Digital",
   "type": "module",
+  "mocha": {
+    "node-option": ["experimental-vm-modules", "no-warnings"]
+  },
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "seed": "node seeds/seed.js"
+    "seed": "node seeds/seed.js",
+    "test": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' NODE_ENV=test mocha --timeout 10000 --exit 'test/**/*.test.js'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.7.0",
     "compression": "^1.7.4",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-rate-limit": "^6.7.0",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.11.2",
     "express-validator": "^6.15.0",
-    "helmet": "^6.1.5",
+    "helmet": "^6.2.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3",
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
-    "twilio": "^5.8.0"
+    "twilio": "^5.8.0",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "chai": "^5.2.1",
+    "mocha": "^11.7.1",
+    "mongodb-memory-server": "^10.2.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.1.4"
   },
   "keywords": [
     "portfolio",

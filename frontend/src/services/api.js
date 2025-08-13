@@ -3,8 +3,9 @@ import toast from 'react-hot-toast';
 
 // Je configure axios avec mes paramètres de base
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
   timeout: 10000,
+  withCredentials: true, // Support des cookies HttpOnly
   headers: {
     'Content-Type': 'application/json',
   },

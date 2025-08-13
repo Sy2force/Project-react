@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, 
   Star, 
@@ -19,10 +19,18 @@ import {
   Database,
   Smartphone,
   Cloud,
-  CheckCircle
+  CheckCircle,
+  Edit,
+  Trash2,
+  Building,
+  Coffee,
+  Camera
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const HomeOptimized = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [stats, setStats] = useState({
     projects: 0,
@@ -53,6 +61,50 @@ const HomeOptimized = () => {
       description: "Applications web et mobile adaptées à vos besoins spécifiques et objectifs business",
       cta: "Demander un devis",
       ctaLink: "/contact"
+    }
+  ];
+
+  // Business Cards data
+  const businessCards = [
+    {
+      id: 1,
+      title: "Tech Solutions Pro",
+      subtitle: "Solutions technologiques avancées",
+      description: "Développement d'applications web et mobile sur mesure pour entreprises innovantes",
+      icon: Building,
+      color: "#667eea",
+      tags: ["React", "Node.js", "Mobile"],
+      address: "123 Rue de la Tech, Tel Aviv"
+    },
+    {
+      id: 2,
+      title: "Creative Studio",
+      subtitle: "Design & Créativité",
+      description: "Studio de création graphique et design UX/UI pour projets digitaux modernes",
+      icon: Palette,
+      color: "#764ba2",
+      tags: ["Design", "UX/UI", "Branding"],
+      address: "456 Avenue du Design, Haifa"
+    },
+    {
+      id: 3,
+      title: "Digital Marketing Hub",
+      subtitle: "Marketing digital expert",
+      description: "Stratégies marketing digitales personnalisées pour booster votre présence en ligne",
+      icon: TrendingUp,
+      color: "#f093fb",
+      tags: ["SEO", "Social Media", "Analytics"],
+      address: "789 Boulevard Marketing, Jerusalem"
+    },
+    {
+      id: 4,
+      title: "Coffee & Code Café",
+      subtitle: "Espace de coworking tech",
+      description: "Café-coworking pour développeurs et entrepreneurs du numérique",
+      icon: Coffee,
+      color: "#4facfe",
+      tags: ["Coworking", "Networking", "Events"],
+      address: "321 Rue du Code, Eilat"
     }
   ];
 
@@ -568,18 +620,20 @@ const HomeOptimized = () => {
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Business Cards Section */}
       <section style={{
         padding: '6rem 2rem',
-        position: 'relative',
-        zIndex: 10
+        position: 'relative'
       }}>
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto'
         }}>
           <motion.div
-            style={{ textAlign: 'center', marginBottom: '4rem' }}
+            style={{
+              textAlign: 'center',
+              marginBottom: '4rem'
+            }}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -592,11 +646,293 @@ const HomeOptimized = () => {
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                marginBottom: '1rem'
+                marginBottom: '1.5rem'
               }}
               variants={itemVariants}
             >
-              Services & Expertise
+              Cartes Business
+            </motion.h2>
+            <motion.p
+              style={{
+                fontSize: '1.25rem',
+                color: 'rgba(255, 255, 255, 0.7)',
+                maxWidth: '600px',
+                margin: '0 auto'
+              }}
+              variants={itemVariants}
+            >
+              Découvrez nos partenaires et services professionnels
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+              gap: '2rem',
+              marginBottom: '3rem'
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
+            {businessCards.map((card, index) => (
+              <motion.div
+                key={index}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '20px',
+                  padding: '2rem',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  cursor: 'pointer'
+                }}
+                variants={itemVariants}
+                whileHover={{ 
+                  scale: 1.02,
+                  y: -5,
+                  transition: { type: "spring", stiffness: 300 }
+                }}
+                onClick={() => navigate(`/projects/${card.id}`)}
+              >
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '1.5rem'
+                }}>
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    background: `${card.color}20`,
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <card.icon size={28} color={card.color} />
+                  </div>
+
+                  {/* CRUD Icons based on role */}
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {(user?.role === 'business' || user?.role === 'admin') && (
+                      <>
+                        <motion.button
+                          style={{
+                            padding: '0.5rem',
+                            background: 'rgba(102, 126, 234, 0.2)',
+                            border: '1px solid rgba(102, 126, 234, 0.3)',
+                            borderRadius: '8px',
+                            color: '#667eea',
+                            cursor: 'pointer'
+                          }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Edit card logic
+                          }}
+                        >
+                          <Edit size={16} />
+                        </motion.button>
+                        <motion.button
+                          style={{
+                            padding: '0.5rem',
+                            background: 'rgba(239, 68, 68, 0.2)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            borderRadius: '8px',
+                            color: '#ef4444',
+                            cursor: 'pointer'
+                          }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Delete card logic
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </motion.button>
+                      </>
+                    )}
+                    <motion.button
+                      style={{
+                        padding: '0.5rem',
+                        background: 'rgba(34, 197, 94, 0.2)',
+                        border: '1px solid rgba(34, 197, 94, 0.3)',
+                        borderRadius: '8px',
+                        color: '#22c55e',
+                        cursor: 'pointer'
+                      }}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Add to favorites logic
+                      }}
+                    >
+                      <Heart size={16} />
+                    </motion.button>
+                  </div>
+                </div>
+
+                <h3 style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  color: 'white',
+                  marginBottom: '0.5rem'
+                }}>
+                  {card.title}
+                </h3>
+
+                <p style={{
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontSize: '0.9rem',
+                  marginBottom: '1rem'
+                }}>
+                  {card.subtitle}
+                </p>
+
+                <p style={{
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  marginBottom: '1.5rem',
+                  lineHeight: '1.6'
+                }}>
+                  {card.description}
+                </p>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '0.5rem'
+                  }}>
+                    {card.tags.map((tag, tagIndex) => (
+                      <span
+                        key={tagIndex}
+                        style={{
+                          background: `${card.color}20`,
+                          color: card.color,
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '20px',
+                          fontSize: '0.875rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <motion.button
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      background: `linear-gradient(135deg, ${card.color} 0%, ${card.color}80 100%)`,
+                      border: 'none',
+                      borderRadius: '12px',
+                      color: 'white',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Voir Détails
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* CTA Section */}
+          <motion.div
+            style={{
+              textAlign: 'center',
+              padding: '3rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '20px'
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={itemVariants}
+          >
+            <h3 style={{
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: '1rem'
+            }}>
+              Rejoignez notre communauté
+            </h3>
+            <p style={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginBottom: '2rem',
+              fontSize: '1.1rem'
+            }}>
+              Créez votre compte et découvrez toutes nos fonctionnalités
+            </p>
+            <motion.button
+              style={{
+                padding: '1rem 2rem',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                color: 'white',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/register')}
+            >
+              S'inscrire maintenant
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section style={{
+        padding: '6rem 2rem',
+        position: 'relative'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <motion.div
+            style={{
+              textAlign: 'center',
+              marginBottom: '4rem'
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+          >
+            <motion.h2
+              style={{
+                fontSize: '3rem',
+                fontWeight: 'bold',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: '1.5rem'
+              }}
+              variants={itemVariants}
+            >
+              Services
             </motion.h2>
             <motion.p
               style={{

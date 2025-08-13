@@ -407,6 +407,59 @@ const ProjectDetail = () => {
               </div>
             </motion.div>
 
+            {/* Localisation & Contact */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className={`p-6 rounded-lg shadow-md ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                📍 Localisation
+              </h3>
+              <div className="space-y-3 mb-4">
+                <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <strong>Adresse:</strong> {project.address || "123 Rue de la Tech, Tel Aviv, Israël"}
+                </p>
+                <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <strong>Téléphone:</strong> +972 3 123 4567
+                </p>
+                <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <strong>Email:</strong> contact@techsolutions.co.il
+                </p>
+              </div>
+
+              {/* Google Maps Mockup */}
+              <div className="relative h-48 bg-gray-200 rounded-lg overflow-hidden mb-4">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-red-500 rounded-full mx-auto mb-2 flex items-center justify-center">
+                      <span className="text-white font-bold">📍</span>
+                    </div>
+                    <p className="text-gray-600 font-medium">Google Maps</p>
+                    <p className="text-sm text-gray-500">
+                      {project.address || "123 Rue de la Tech, Tel Aviv"}
+                    </p>
+                  </div>
+                </div>
+                {/* Simulated map grid */}
+                <div className="absolute inset-0 opacity-20">
+                  <div className="grid grid-cols-8 grid-rows-6 h-full">
+                    {Array.from({ length: 48 }).map((_, i) => (
+                      <div key={i} className="border border-gray-300"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                onClick={() => window.open(`https://maps.google.com/?q=${encodeURIComponent(project.address || "Tel Aviv, Israel")}`, '_blank')}
+              >
+                Ouvrir dans Google Maps
+              </button>
+            </motion.div>
+
             {/* CTA */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}

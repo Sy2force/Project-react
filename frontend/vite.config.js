@@ -1,41 +1,39 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-      "@cmp": path.resolve(__dirname, "src/components"),
-      "@pages": path.resolve(__dirname, "src/pages"),
-      "@assets": path.resolve(__dirname, "src/assets"),
-    },
-  },
-  server: { 
-    port: 3001,
+  server: {
+    port: 3000,
+    strictPort: true,
     host: true,
-    hmr: { overlay: false },
-    open: false
+    proxy: { 
+      "/api": { 
+        target: "http://localhost:5000", 
+        changeOrigin: true 
+      } 
+    }
   },
+  preview: { 
+    port: 3000, 
+    strictPort: true 
+  },
+  resolve: { 
+    alias: { 
+      "@": path.resolve(__dirname, "src") 
+    } 
+  },
+  plugins: [react()],
   build: {
-    target: "es2020",
-    cssCodeSplit: true,
-    sourcemap: false,
-    chunkSizeWarningLimit: 900,
+    target: 'esnext',
     rollupOptions: {
       output: {
         manualChunks: {
-          react: ["react", "react-dom"],
-        },
-      },
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom']
+        }
+      }
     },
-    minify: "esbuild",
-  },
-  esbuild: {
-    drop: ["console", "debugger"]
-  },
-  optimizeDeps: {
-    include: ["react", "react-dom"],
-  },
-});
+    chunkSizeWarningLimit: 1000
+  }
+})

@@ -8,26 +8,23 @@ class DatabaseConnection {
     this.retryDelay = 5000; // 5 seconds
   }
 
-  async connect() {
-    if (this.isConnected) {
+  async connect(customUri = null) {
+    if (this.isConnected && !customUri) {
       console.log('📊 MongoDB: Already connected');
       return;
     }
 
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio';
+    const mongoUri = customUri || process.env.MONGODB_URI || 'mongodb://localhost:27017/portfolio';
     
     try {
       console.log('🔄 MongoDB: Attempting connection...');
       console.log(`📍 MongoDB URI: ${mongoUri.replace(/\/\/.*@/, '//***:***@')}`);
 
       await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 10000, // 10 seconds
         socketTimeoutMS: 45000, // 45 seconds
         maxPoolSize: 10,
         bufferCommands: false,
-        bufferMaxEntries: 0,
       });
 
       this.isConnected = true;

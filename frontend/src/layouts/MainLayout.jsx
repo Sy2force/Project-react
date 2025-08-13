@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import NavbarAdvanced from '../components/NavbarAdvanced';
+import NavbarModern from '../components/NavbarModern';
 
 const MainLayout = () => {
   const { isDark } = useTheme();
@@ -42,8 +42,8 @@ const MainLayout = () => {
         ))}
       </div>
 
-      {/* Advanced Navigation */}
-      <NavbarAdvanced />
+      {/* Modern Navigation */}
+      <NavbarModern />
 
       {/* Main Content */}
       <main style={{

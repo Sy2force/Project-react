@@ -83,6 +83,12 @@ app.use((req, res, next) => {
 
 // Initialize MongoDB connection with robust retry logic
 async function initializeDatabase() {
+  // Skip database initialization in test environment
+  if (process.env.NODE_ENV === 'test') {
+    console.log('🛑 Test environment: Skipping database initialization');
+    return;
+  }
+  
   try {
     await dbConnection.connect();
     console.log('🎯 Database initialization completed');
@@ -92,8 +98,10 @@ async function initializeDatabase() {
   }
 }
 
-// Start database connection
-initializeDatabase();
+// Start database connection if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  initializeDatabase();
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -188,10 +196,16 @@ process.on('SIGTERM', () => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-  console.log(`📱 Frontend URL: ${FRONTEND_URL}`);
-  console.log(`🔗 API Health: http://localhost:${PORT}/api/health`);
-  console.log(`📚 API Docs: http://localhost:${PORT}/`);
-  console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
-});
+// Only start the server if this file is run directly (not when imported for tests)
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+    console.log(`📱 Frontend URL: ${FRONTEND_URL}`);
+    console.log(`🔗 API Health: http://localhost:${PORT}/api/health`);
+    console.log(`📚 API Docs: http://localhost:${PORT}/`);
+    console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
+
+// Export the Express app for testing
+export { app };
