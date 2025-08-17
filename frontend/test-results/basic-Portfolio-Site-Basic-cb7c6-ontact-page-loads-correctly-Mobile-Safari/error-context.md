@@ -1,0 +1,82 @@
+# Page snapshot
+
+```yaml
+- main:
+  - heading "Get In Touch" [level=1]
+  - paragraph: Ready to bring your vision to life? Let's discuss your project and explore how we can help you achieve your goals.
+  - button "Email hello@shayacoca.com Send us an email anytime":
+    - heading "Email" [level=3]
+    - paragraph: hello@shayacoca.com
+    - paragraph: Send us an email anytime
+  - button "Phone +1 (555) 123-4567 Mon-Fri from 8am to 6pm":
+    - heading "Phone" [level=3]
+    - paragraph: +1 (555) 123-4567
+    - paragraph: Mon-Fri from 8am to 6pm
+  - button "Office San Francisco, CA Come say hello at our HQ":
+    - heading "Office" [level=3]
+    - paragraph: San Francisco, CA
+    - paragraph: Come say hello at our HQ
+  - button "Working Hours Mon-Fri 8:00-18:00 We respond within 24 hours":
+    - heading "Working Hours" [level=3]
+    - paragraph: Mon-Fri 8:00-18:00
+    - paragraph: We respond within 24 hours
+  - heading "Send us a message" [level=2]
+  - paragraph: Fill out the form below and we'll get back to you within 24 hours.
+  - textbox "Your Name"
+  - textbox "Email Address"
+  - textbox "Company (Optional)"
+  - textbox "Subject"
+  - text: Project Type
+  - combobox:
+    - option "Select type" [selected]
+    - option "Web Development"
+    - option "Mobile App"
+    - option "UI/UX Design"
+    - option "E-commerce"
+    - option "SaaS Platform"
+    - option "Consulting"
+    - option "Other"
+  - text: Budget Range
+  - combobox:
+    - option "Select budget" [selected]
+    - option "$5,000 - $15,000"
+    - option "$15,000 - $50,000"
+    - option "$50,000 - $100,000"
+    - option "$100,000+"
+    - option "Let's discuss"
+  - text: Timeline
+  - combobox:
+    - option "Select timeline" [selected]
+    - option "1-2 months"
+    - option "3-6 months"
+    - option "6-12 months"
+    - option "12+ months"
+    - option "Flexible"
+  - text: Message
+  - textbox "Tell us about your project..."
+  - button "Send Message"
+  - heading "Our Location" [level=3]
+  - paragraph: San Francisco, CA
+  - paragraph: Interactive map would be integrated here
+  - text: 123 Innovation Street, San Francisco, CA 94105
+  - heading "Frequently Asked Questions" [level=3]
+  - heading "How long does a typical project take?" [level=4]
+  - paragraph: Project timelines vary based on complexity, but most projects range from 3-6 months from start to finish.
+  - heading "Do you work with international clients?" [level=4]
+  - paragraph: Yes! We work with clients worldwide and have experience managing projects across different time zones.
+  - heading "What's included in your services?" [level=4]
+  - paragraph: We provide end-to-end solutions including strategy, design, development, testing, and ongoing support.
+  - heading "Follow Us" [level=3]
+  - link:
+    - /url: "#"
+  - link:
+    - /url: "#"
+  - link:
+    - /url: "#"
+  - link:
+    - /url: "#"
+  - heading "Ready to Start Your Project?" [level=2]
+  - paragraph: Whether you have a detailed brief or just an idea, we're here to help you turn your vision into reality. Let's schedule a consultation to discuss your project.
+  - button "Schedule Consultation"
+  - button "View Our Work"
+```

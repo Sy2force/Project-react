@@ -1,0 +1,297 @@
+# 🚀 MAC DEV BOOST - Configuration .zshrc optimisée pour développement
+# ================================================================
+
+# Variables d'environnement Node.js ultra-optimisées
+export NODE_OPTIONS="--max-old-space-size=8192 --max-semi-space-size=512 --optimize-for-size"
+export UV_THREADPOOL_SIZE=128
+export NODE_ENV=development
+export NODE_NO_WARNINGS=1
+
+# Optimisations npm/pnpm/yarn
+export NPM_CONFIG_PROGRESS=false
+export NPM_CONFIG_AUDIT=false
+export NPM_CONFIG_FUND=false
+export NPM_CONFIG_UPDATE_NOTIFIER=false
+export PNPM_HOME="$HOME/.local/share/pnpm"
+
+# Optimisations MongoDB
+export MONGO_INITDB_ROOT_USERNAME=admin
+export MONGO_INITDB_ROOT_PASSWORD=password
+export MONGODB_URI="mongodb://localhost:27017/portfolio"
+
+# Optimisations Playwright
+export PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright
+export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=false
+export PLAYWRIGHT_JUNIT_OUTPUT_NAME=results.xml
+
+# Optimisations Vite/React
+export VITE_CJS_IGNORE_WARNING=true
+export BROWSER=none
+export FAST_REFRESH=true
+
+# PATH optimisé
+export PATH="$PNPM_HOME:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
+
+# Alias de productivité générale
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias h='history'
+alias c='clear'
+
+# Alias développement Node.js/React
+alias ns='npm start'
+alias nd='npm run dev'
+alias nb='npm run build'
+alias nt='npm test'
+alias ni='npm install'
+alias nci='npm ci'
+alias nrd='npm run dev'
+alias nrb='npm run build'
+alias nrl='npm run lint'
+alias nrf='npm run lint -- --fix'
+
+# Alias pnpm (plus rapide que npm)
+alias ps='pnpm start'
+alias pd='pnpm dev'
+alias pb='pnpm build'
+alias pt='pnpm test'
+alias pi='pnpm install'
+alias pa='pnpm add'
+alias pr='pnpm remove'
+
+# Alias Git ultra-optimisés
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add .'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gb='git branch'
+alias gbd='git branch -d'
+alias gm='git merge'
+alias gr='git rebase'
+alias gst='git stash'
+alias gsp='git stash pop'
+alias glog='git log --oneline --graph --decorate'
+
+# Alias Docker (si utilisé)
+alias d='docker'
+alias dc='docker-compose'
+alias dcu='docker-compose up'
+alias dcd='docker-compose down'
+alias dcb='docker-compose build'
+
+# Fonctions utilitaires développement
+clean-dev() {
+    echo "🧹 Nettoyage environnement dev..."
+    
+    # Nettoyage Node.js
+    rm -rf node_modules/.cache 2>/dev/null || true
+    rm -rf .next/cache 2>/dev/null || true
+    rm -rf dist 2>/dev/null || true
+    rm -rf build 2>/dev/null || true
+    rm -rf coverage 2>/dev/null || true
+    rm -rf playwright-report 2>/dev/null || true
+    rm -rf test-results 2>/dev/null || true
+    
+    # Nettoyage caches
+    npm cache clean --force 2>/dev/null || true
+    pnpm store prune 2>/dev/null || true
+    yarn cache clean 2>/dev/null || true
+    
+    echo "✅ Nettoyage terminé"
+}
+
+# Mode guerre développement - Performance maximale
+dev-war-mode() {
+    echo "⚔️  ACTIVATION MODE GUERRE DEV"
+    echo "=============================="
+    
+    # Augmenter les limites système
+    ulimit -n 65536
+    ulimit -u 2048
+    
+    # Variables d'environnement maximales
+    export NODE_OPTIONS="--max-old-space-size=16384 --max-semi-space-size=1024 --optimize-for-size"
+    export UV_THREADPOOL_SIZE=256
+    
+    # Optimisations système
+    sudo sysctl -w kern.maxfiles=65536 2>/dev/null || true
+    sudo sysctl -w kern.maxfilesperproc=32768 2>/dev/null || true
+    
+    # Purger la mémoire
+    sudo purge 2>/dev/null || true
+    
+    echo "🚀 Mode guerre activé!"
+    echo "📊 Limites système:"
+    echo "   - File descriptors: $(ulimit -n)"
+    echo "   - Processes: $(ulimit -u)"
+    echo "   - Node memory: 16GB"
+    echo "   - UV threads: 256"
+}
+
+# Mode développement normal
+dev-normal-mode() {
+    echo "🔄 Retour mode développement normal"
+    
+    # Restaurer les valeurs par défaut
+    export NODE_OPTIONS="--max-old-space-size=8192 --max-semi-space-size=512"
+    export UV_THREADPOOL_SIZE=128
+    
+    ulimit -n 10240
+    ulimit -u 1024
+    
+    echo "✅ Mode normal activé"
+}
+
+# Monitoring système développement
+dev-monitor() {
+    echo "📊 MONITORING SYSTÈME DÉVELOPPEMENT"
+    echo "=================================="
+    
+    # CPU et mémoire
+    echo "💻 Système:"
+    echo "   CPU usage: $(top -l 1 | grep "CPU usage" | awk '{print $3}' | sed 's/%//')%"
+    echo "   Memory pressure: $(memory_pressure | grep "System-wide memory free percentage" | awk '{print $5}')%"
+    echo "   Swap used: $(sysctl vm.swapusage | awk '{print $7}' | sed 's/M/MB/')"
+    
+    # Processus développement
+    echo ""
+    echo "🔧 Processus dev:"
+    echo "   Node processes: $(ps aux | grep -c '[n]ode')"
+    echo "   VS Code processes: $(ps aux | grep -c '[V]isual Studio Code')"
+    echo "   Chrome processes: $(ps aux | grep -c '[C]hrome')"
+    echo "   MongoDB processes: $(ps aux | grep -c '[m]ongod')"
+    
+    # Ports utilisés
+    echo ""
+    echo "🌐 Ports actifs:"
+    lsof -i :3000,5173,5174,5184,8080,27017 2>/dev/null | grep LISTEN || echo "   Aucun port dev actif"
+    
+    # Espace disque
+    echo ""
+    echo "💾 Stockage:"
+    echo "   Espace libre: $(df -h / | awk 'NR==2{print $4}')"
+    echo "   node_modules: $(du -sh node_modules 2>/dev/null | awk '{print $1}' || echo 'N/A')"
+}
+
+# Installation rapide des dépendances
+quick-install() {
+    if [ -f "pnpm-lock.yaml" ]; then
+        echo "📦 Installation avec pnpm..."
+        pnpm install --frozen-lockfile
+    elif [ -f "yarn.lock" ]; then
+        echo "📦 Installation avec yarn..."
+        yarn install --frozen-lockfile
+    elif [ -f "package-lock.json" ]; then
+        echo "📦 Installation avec npm..."
+        npm ci
+    else
+        echo "📦 Installation avec npm..."
+        npm install
+    fi
+}
+
+# Démarrage rapide projet React
+quick-start() {
+    echo "🚀 Démarrage rapide projet React..."
+    
+    # Vérifier les dépendances
+    if [ ! -d "node_modules" ]; then
+        echo "📦 Installation des dépendances..."
+        quick-install
+    fi
+    
+    # Démarrer en mode dev
+    if [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
+        echo "⚡ Démarrage avec Vite..."
+        npm run dev
+    elif [ -f "next.config.js" ]; then
+        echo "▲ Démarrage avec Next.js..."
+        npm run dev
+    else
+        echo "⚛️  Démarrage avec Create React App..."
+        npm start
+    fi
+}
+
+# Test rapide avec coverage
+quick-test() {
+    echo "🧪 Tests rapides..."
+    
+    if command -v pnpm &> /dev/null && [ -f "pnpm-lock.yaml" ]; then
+        pnpm test
+    else
+        npm test
+    fi
+}
+
+# Build optimisé
+quick-build() {
+    echo "🏗️  Build optimisé..."
+    
+    # Nettoyage préalable
+    rm -rf dist build .next 2>/dev/null || true
+    
+    # Build selon le type de projet
+    if [ -f "vite.config.js" ] || [ -f "vite.config.ts" ]; then
+        npm run build
+    elif [ -f "next.config.js" ]; then
+        npm run build
+    else
+        npm run build
+    fi
+    
+    echo "✅ Build terminé"
+    
+    # Afficher la taille
+    if [ -d "dist" ]; then
+        echo "📊 Taille du build: $(du -sh dist | awk '{print $1}')"
+    elif [ -d "build" ]; then
+        echo "📊 Taille du build: $(du -sh build | awk '{print $1}')"
+    fi
+}
+
+# Fonction de mise à jour des dépendances
+update-deps() {
+    echo "🔄 Mise à jour des dépendances..."
+    
+    if command -v pnpm &> /dev/null && [ -f "pnpm-lock.yaml" ]; then
+        pnpm update
+    elif command -v yarn &> /dev/null && [ -f "yarn.lock" ]; then
+        yarn upgrade
+    else
+        npm update
+    fi
+    
+    echo "✅ Dépendances mises à jour"
+}
+
+# Optimisation automatique au démarrage du terminal
+if [[ -z "$DEV_MODE_LOADED" ]]; then
+    export DEV_MODE_LOADED=1
+    
+    # Optimisations silencieuses
+    ulimit -n 10240 2>/dev/null || true
+    
+    echo "🚀 Terminal optimisé pour le développement"
+    echo "💡 Commandes disponibles:"
+    echo "   dev-war-mode    - Performance maximale"
+    echo "   dev-monitor     - Monitoring système"
+    echo "   clean-dev       - Nettoyage environnement"
+    echo "   quick-start     - Démarrage rapide projet"
+    echo "   quick-test      - Tests rapides"
+    echo "   quick-build     - Build optimisé"
+fi

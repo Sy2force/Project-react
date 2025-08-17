@@ -1,0 +1,49 @@
+{
+  "name": "portfolio-shay-acoca-tests",
+  "version": "1.0.0",
+  "description": "Suite de tests Playwright complète pour le portfolio React futuriste Shay Acoca",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "test:e2e": "playwright test tests/e2e-complete.spec.js",
+    "test:performance": "playwright test tests/performance.spec.js",
+    "test:headed": "node tests/run-tests.js --headed",
+    "test:verbose": "node tests/run-tests.js --verbose",
+    "test:chrome": "node tests/run-tests.js --browser=chromium",
+    "test:firefox": "node tests/run-tests.js --browser=firefox",
+    "test:safari": "node tests/run-tests.js --browser=webkit",
+    "test:mobile": "node tests/run-tests.js --browser='Mobile Chrome'",
+    "test:suite:auth": "node tests/run-tests.js --suite=auth",
+    "test:suite:navigation": "node tests/run-tests.js --suite=navigation",
+    "test:suite:performance": "node tests/run-tests.js --suite=performance",
+    "test:clean": "node tests/run-tests.js --clean",
+    "test:report": "playwright show-report",
+    "test:install": "playwright install",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:codegen": "playwright codegen http://localhost:5173",
+    "validate:complete": "node tests/run-tests.js --verbose --clean",
+    "validate:quick": "playwright test tests/e2e-complete.spec.js --project=chromium",
+    "validate:production": "cross-env NODE_ENV=production node tests/run-tests.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "cross-env": "^7.0.3"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "react",
+    "portfolio",
+    "validation",
+    "performance",
+    "accessibility",
+    "seo"
+  ],
+  "author": "Shay Acoca",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -119,9 +119,10 @@ userSchema.statics.findByCredentials = async (email, password) => {
 // Method to generate auth token
 userSchema.methods.generateAuthToken = function() {
   const user = this;
+  const jwt = require('jsonwebtoken');
   const token = jwt.sign(
     { sub: user._id.toString(), role: user.role },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || 'dev-secret',
     { expiresIn: '7d' }
   );
   return token;

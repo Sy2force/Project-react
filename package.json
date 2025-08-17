@@ -1,0 +1,29 @@
+{
+  "name": "project-root",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Portfolio React - Serveur Unifié",
+  "main": "server-unifie.js",
+  "scripts": {
+    "start": "node server-unifie.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sy2force/Project-react.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sy2force/Project-react/issues"
+  },
+  "homepage": "https://github.com/Sy2force/Project-react#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

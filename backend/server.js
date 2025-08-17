@@ -3,8 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import dbConnection from './config/database.js';
+import dbConnection from './db.js';
 
 // Load environment variables
 dotenv.config();
@@ -23,9 +24,10 @@ import healthRoutes from './routes/health.js';
 import searchRoutes from './routes/search.js';
 import uploadRoutes from './routes/upload.js';
 import notificationRoutes from './routes/notifications.js';
+import pingRoutes from './routes/ping.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
 // Security middleware
@@ -46,7 +48,7 @@ app.use(compression());
 
 // CORS configuration
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: ['http://localhost:5184', 'http://localhost:3000', FRONTEND_URL],
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -74,6 +76,7 @@ app.use(limiter);
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -90,7 +93,7 @@ async function initializeDatabase() {
   }
   
   try {
-    await dbConnection.connect();
+    // Database connection is now handled by connectDB() in startServer()
     console.log('🎯 Database initialization completed');
   } catch (error) {
     console.error('💥 Database initialization failed:', error.message);
@@ -117,6 +120,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/ping', pingRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -136,7 +140,8 @@ app.get('/', (req, res) => {
       upload: '/api/upload',
       notifications: '/api/notifications',
       admin: '/api/admin',
-      health: '/api/health'
+      health: '/api/health',
+      ping: '/api/ping'
     }
   });
 });
@@ -190,22 +195,38 @@ app.use((err, req, res, next) => {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('🛑 SIGTERM reçu, arrêt du serveur...');
-  mongoose.connection.close(() => {
-    console.log('📊 Connexion MongoDB fermée');
-    process.exit(0);
+  import('mongoose').then(mongoose => {
+    mongoose.connection.close(() => {
+      console.log('📊 Connexion MongoDB fermée');
+      process.exit(0);
+    });
   });
 });
 
-// Only start the server if this file is run directly (not when imported for tests)
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-    console.log(`📱 Frontend URL: ${FRONTEND_URL}`);
-    console.log(`🔗 API Health: http://localhost:${PORT}/api/health`);
-    console.log(`📚 API Docs: http://localhost:${PORT}/`);
-    console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
-  });
-}
+// Connect to MongoDB and start server
+const startServer = async () => {
+  try {
+    // Connect to MongoDB Atlas
+    await dbConnection.connect();
+    
+    // Only start the server if this file is run directly (not when imported for tests)
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(PORT, () => {
+        console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+        console.log(`📱 Frontend URL: ${FRONTEND_URL}`);
+        console.log(`🔗 API Health: http://localhost:${PORT}/api/health`);
+        console.log(`📚 API Docs: http://localhost:${PORT}/`);
+        console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+      });
+    }
+  } catch (error) {
+    console.error('❌ Impossible de démarrer le serveur:', error.message);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();
 
 // Export the Express app for testing
 export { app };
